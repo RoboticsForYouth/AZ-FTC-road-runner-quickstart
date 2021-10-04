@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.sample;
+package org.firstinspires.ftc.teamcode.sample.saurav;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,11 +14,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 public class SauravTestAutoBase {
 
     private ElapsedTime runtime = new ElapsedTime();
-    DcMotorEx lFront, rFront, lBack, rBack;
-    Servo arm, grip;
+    DcMotorEx lFront, rFront, lBack, rBack, rLaunch, lLaunch;
+    Servo arm, grip, trig;
     LinearOpMode linearOpMode;
-    double armPos, gripPos;
+    double armPos, gripPos, trigPos;
     double MIN_POS = 0, MAX_POS = 1;
+    boolean launchRunning = false;
     MultipleTelemetry telemetry;
 
     public SauravTestAutoBase(LinearOpMode opMode) {
@@ -36,8 +38,12 @@ public class SauravTestAutoBase {
         lBack.setDirection(DcMotor.Direction.REVERSE);
         rBack.setDirection(DcMotor.Direction.FORWARD);
 
+        lLaunch = opMode.hardwareMap.get(DcMotorEx.class, "LeftMotor");
+        rLaunch = opMode.hardwareMap.get(DcMotorEx.class, "RightMotor");
+
         arm = opMode.hardwareMap.servo.get("wobblearm");
         grip = opMode.hardwareMap.servo.get("wobblegrip");
+        trig = opMode.hardwareMap.servo.get("trigger");
 
         this.runtime.reset();
     }
@@ -53,6 +59,11 @@ public class SauravTestAutoBase {
         setupMotor(lBack);
         setupMotor(rBack);
         stop();
+
+        lLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rLaunch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lLaunch.setDirection(DcMotorEx.Direction.FORWARD);
+        rLaunch.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void stop() {
@@ -77,6 +88,45 @@ public class SauravTestAutoBase {
     public void setGrip(double a) {
         gripPos = a;
         grip.setPosition(Range.clip(gripPos, MIN_POS, MAX_POS));
+    }
+
+    public void setTrig(double a) {
+        trigPos = a;
+        trig.setPosition(Range.clip(trigPos, MIN_POS, MAX_POS));
+    }
+
+    public void shoot() {
+        setTrig(0.3);
+        linearOpMode.sleep(500);
+        setTrig(0.0);
+        linearOpMode.sleep(500);
+    }
+
+    public void startLauncher(double vel) {
+        lLaunch.setVelocity(vel);
+        rLaunch.setVelocity(vel);
+        launchRunning = true;
+    }
+
+    public void stopLauncher() {
+        if (launchRunning) {
+            rLaunch.setPower(0);
+            lLaunch.setPower(0);
+            launchRunning = false;
+        }
+    }
+
+    public void ringShoot() {
+        startLauncher(980);
+        linearOpMode.sleep(1250);
+        shoot();
+        startLauncher(1000);
+        linearOpMode.sleep(1000);
+        shoot();
+        startLauncher(990);
+        linearOpMode.sleep(1000);
+        shoot();
+        stopLauncher();
     }
 
     public void setMotorForRunToPos(DcMotor motor, double power, int pos){
@@ -104,9 +154,23 @@ public class SauravTestAutoBase {
         int pos = 667;
 
         setMotorForRunToPos(lFront, defaultPower, -pos);
+        setMotorForRunToPos(rFront, defaultPower, pos);
+        setMotorForRunToPos(lBack, defaultPower, -pos);
+        setMotorForRunToPos(rBack, defaultPower, pos);
+
+        waitUntilMotorNotBusy();
+
+        stop();
+    }
+
+    public void turnLeft90() {
+        double defaultPower = 0.5;
+        int pos = 667;
+
         setMotorForRunToPos(lFront, defaultPower, pos);
-        setMotorForRunToPos(lFront, defaultPower, -pos);
-        setMotorForRunToPos(lFront, defaultPower, pos);
+        setMotorForRunToPos(rFront, defaultPower, -pos);
+        setMotorForRunToPos(lBack, defaultPower, pos);
+        setMotorForRunToPos(rBack, defaultPower, -pos);
 
         waitUntilMotorNotBusy();
 

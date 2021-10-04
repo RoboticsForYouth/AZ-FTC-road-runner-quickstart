@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.sample;
+package org.firstinspires.ftc.teamcode.sample.saurav;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 
 @Autonomous(name="Saurav Test Auto", group="Saurav Test Auto")
 public class SauravTestAuto extends LinearOpMode {
@@ -28,22 +27,30 @@ public class SauravTestAuto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        base.setGrip(1);
-        sleep(2000);
-
-        base.moveForwardEncoder(3500, 0.5);
-        sleep(1000);
+//        base.setGrip(1);
+//        sleep(2000);
+//
+//        base.moveForwardEncoder(3500, 0.5);
+//        sleep(1000);
         base.turnRight90();
-        sleep(1000);
+//        sleep(1000);
 //        base.moveForwardEncoder(500, 0.5);
 //        sleep(1000);
-
-        base.setArm(0.375);
-        sleep(2000);
-        base.setGrip(0);
-        sleep(2000);
-        base.setArm(0.85);
-        sleep(2000);
+//
+//        base.setArm(0.375);
+//        sleep(2000);
+//        base.setGrip(0);
+//        sleep(1000);
+//        base.setArm(0.85);
+//        sleep(2000);
+//
+//        base.turnLeft90();
+//        base.startLauncher(500);
+//        sleep(3000);
+//        for (int i = 0; i < 3; i++) {
+//            base.shoot();
+//        }
+//        base.stopLauncher();
 
         base.stop();
     }
