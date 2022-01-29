@@ -56,13 +56,16 @@ public abstract class BlueAutoBase extends LinearOpMode {
 
             if(pos == 3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX+23, originY+19, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX+23, originY+22, originHeading)).build();
+            } else if(pos == 1) {
+                drop2 = drive.trajectoryBuilder(drop.end())
+                        .lineToSplineHeading(new Pose2d(originX+22, originY+17, originHeading)).build();
             } else {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX+22, originY+19, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX+22, originY+18, originHeading)).build();
             }
             drop3 = drive.trajectoryBuilder(drop.end())
-                    .lineToSplineHeading(new Pose2d(originX+23, originY+15, originHeading)).build();
+                    .lineToSplineHeading(new Pose2d(originX+23, originY+10, originHeading)).build();
 
 
         } else { //RIGHT
@@ -71,7 +74,10 @@ public abstract class BlueAutoBase extends LinearOpMode {
 
             if(pos == 3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX-24, originY+19, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX-24, originY+21, originHeading)).build();
+            } else if(pos == 1) {
+                drop2 = drive.trajectoryBuilder(drop.end())
+                        .lineToSplineHeading(new Pose2d(originX-22, originY+16, originHeading)).build();
             } else {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX-23, originY+17, originHeading)).build();
@@ -133,7 +139,7 @@ public abstract class BlueAutoBase extends LinearOpMode {
                 if(carousel) { //start on left - carousel - park in warehouse
 
                     park = drive.trajectoryBuilder(duck3.end())
-                            .lineToSplineHeading(new Pose2d(originX + 48, originY + 19, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX + 48, originY + 12, originHeading)).build();
                     park2 = drive.trajectoryBuilder(park.end())
                             .lineToSplineHeading(new Pose2d(originX, originY-2, originHeading)).build();
                     park3 = drive.trajectoryBuilder(park2.end())
@@ -176,7 +182,7 @@ public abstract class BlueAutoBase extends LinearOpMode {
             } else {
                 if(carousel) { //start on right - carousel - park in storage
                     park = drive.trajectoryBuilder(duck3.end())
-                            .lineToSplineHeading(new Pose2d(originX+20, originY+25, Math.toRadians(90))).build();
+                            .lineToSplineHeading(new Pose2d(originX+20, originY+24, Math.toRadians(90))).build();
                 } else { //start on right - park in storage
                     park = drive.trajectoryBuilder(drop3.end())
                             .lineToSplineHeading(new Pose2d(originX+25, originY+24, Math.toRadians(90))).build();

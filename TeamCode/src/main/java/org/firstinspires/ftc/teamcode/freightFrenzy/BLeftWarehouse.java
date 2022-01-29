@@ -21,6 +21,7 @@ public class BLeftWarehouse extends BlueAutoBase {
         if (isStopRequested()) return;
         setupPos();
         detection();
+        sleep(4000);
         moveToDrop("left");
         moveToPark("left", "warehouse");
     }

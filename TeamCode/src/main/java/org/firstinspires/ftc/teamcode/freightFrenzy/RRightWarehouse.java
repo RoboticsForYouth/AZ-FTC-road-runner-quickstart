@@ -21,6 +21,7 @@ public class RRightWarehouse extends RedAutoBase {
         if (isStopRequested()) return;
         setupPos();
         detection();
+        sleep(4000);
         moveToDrop("right");
         moveToPark("right", "warehouse");
 

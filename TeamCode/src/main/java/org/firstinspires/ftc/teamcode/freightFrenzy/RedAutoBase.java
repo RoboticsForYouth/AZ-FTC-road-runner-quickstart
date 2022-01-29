@@ -56,10 +56,13 @@ public abstract class RedAutoBase extends LinearOpMode {
 
             if(pos == 3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX+24, originY+20, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX+25, originY+22, originHeading)).build();
+            } else if(pos == 1) {
+                drop2 = drive.trajectoryBuilder(drop.end())
+                        .lineToSplineHeading(new Pose2d(originX+24, originY+16, originHeading)).build();
             } else {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX+23, originY+17, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX+24, originY+17, originHeading)).build();
             }
             drop3 = drive.trajectoryBuilder(drop.end())
                     .lineToSplineHeading(new Pose2d(originX+23, originY+10, originHeading)).build();
@@ -71,7 +74,10 @@ public abstract class RedAutoBase extends LinearOpMode {
 
             if(pos == 3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX-23, originY+20, originHeading)).build();
+                        .lineToSplineHeading(new Pose2d(originX-23, originY+22, originHeading)).build();
+            } else if(pos == 1) {
+                drop2 = drive.trajectoryBuilder(drop.end())
+                        .lineToSplineHeading(new Pose2d(originX-23, originY+16, originHeading)).build();
             } else {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX-23, originY+17, originHeading)).build();
@@ -109,18 +115,18 @@ public abstract class RedAutoBase extends LinearOpMode {
         carousel = true;
         if(side.equals("right")) { //RIGHT
             duck = drive.trajectoryBuilder(drop3.end())
-                    .lineToSplineHeading(new Pose2d(originX-75, originY+15, originHeading)).build();
+                    .lineToSplineHeading(new Pose2d(originX-76, originY+15, originHeading)).build();
             duck2 = drive.trajectoryBuilder(duck.end())
                     .lineToSplineHeading(new Pose2d(originX-68, originY+15, originHeading)).build();
             duck3 = drive.trajectoryBuilder(duck2.end())
                     .lineToSplineHeading(new Pose2d(originX-68, originY+5, originHeading)).build();
         } else { //LEFT
             duck = drive.trajectoryBuilder(drop3.end())
-                    .lineToSplineHeading(new Pose2d(originX-27, originY+15, originHeading)).build();
+                    .lineToSplineHeading(new Pose2d(originX-29, originY+15, originHeading)).build();
             duck2 = drive.trajectoryBuilder(duck.end())
-                    .lineToSplineHeading(new Pose2d(originX-20, originY+15, originHeading)).build();
+                    .lineToSplineHeading(new Pose2d(originX-23, originY+15, originHeading)).build();
             duck3 = drive.trajectoryBuilder(duck2.end())
-                    .lineToSplineHeading(new Pose2d(originX-20, originY+5, originHeading)).build();
+                    .lineToSplineHeading(new Pose2d(originX-23, originY+5, originHeading)).build();
         }
         drive.followTrajectory(duck);
         drive.followTrajectory(duck2);
@@ -136,15 +142,17 @@ public abstract class RedAutoBase extends LinearOpMode {
                     park2 = drive.trajectoryBuilder(duck3.end())
                             .lineToSplineHeading(new Pose2d(originX+24, originY-5, originHeading)).build();
                     park3 = drive.trajectoryBuilder(park2.end())
-                            .lineToSplineHeading(new Pose2d(originX +36, originY+20, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX +30, originY+20, originHeading)).build();
                     //drive.followTrajectory(park);
 
                 } else { //start on right - park in warehouse
-                    park2 = drive.trajectoryBuilder(drop3.end())
+                    park = drive.trajectoryBuilder(drop3.end())
+                            .lineToSplineHeading(new Pose2d(originX-10, originY+2, originHeading)).build();
+                    park2 = drive.trajectoryBuilder(park.end())
                             .lineToSplineHeading(new Pose2d(originX+24, originY-2, originHeading)).build();
                     park3 = drive.trajectoryBuilder(park2.end())
                             .lineToSplineHeading(new Pose2d(originX+36, originY+20, originHeading)).build();
-
+                    drive.followTrajectory(park);
                 }
                 drive.followTrajectory(park2);
                 drive.followTrajectory(park3);
@@ -158,15 +166,15 @@ public abstract class RedAutoBase extends LinearOpMode {
             if(where.equals("warehouse")) {
                 if(carousel) { //start on left - carousel - park in warehouse
                     park = drive.trajectoryBuilder(duck3.end())
-                            .lineToSplineHeading(new Pose2d(originX+84, originY, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX+72, originY-5, originHeading)).build();
                     park2 = drive.trajectoryBuilder(park.end())
-                            .lineToSplineHeading(new Pose2d(originX+84, originY+24, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX+72, originY+24, originHeading)).build();
 
                 } else { //start on left - no carousel - park in warehouse
                     park = drive.trajectoryBuilder(drop3.end())
-                            .lineToSplineHeading(new Pose2d(originX+84, originY, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX+72, originY, originHeading)).build();
                     park2 = drive.trajectoryBuilder(park.end())
-                            .lineToSplineHeading(new Pose2d(originX+84, originY+24, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX+72, originY+24, originHeading)).build();
 
                 }
                 drive.followTrajectory(park);
@@ -174,10 +182,10 @@ public abstract class RedAutoBase extends LinearOpMode {
             } else {
                 if(carousel) { //start on left - carousel - park in storage
                     park = drive.trajectoryBuilder(duck3.end())
-                            .lineToSplineHeading(new Pose2d(originX-27, originY+25, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX-27, originY+23, originHeading)).build();
                 } else { //start on left - no carousel - park in storage
                     park = drive.trajectoryBuilder(drop3.end())
-                            .lineToSplineHeading(new Pose2d(originX-27, originY+24, originHeading)).build();
+                            .lineToSplineHeading(new Pose2d(originX-27, originY+23, originHeading)).build();
                 }
                 drive.followTrajectory(park);
 

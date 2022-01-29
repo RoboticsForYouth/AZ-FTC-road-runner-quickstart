@@ -21,6 +21,7 @@ public class BRightCarouselStorage extends BlueAutoBase {
         if (isStopRequested()) return;
         setupPos();
         detection();
+        sleep(3000);
         moveToDrop("right");
         moveToCarousel("right");
         moveToPark("right", "storage");

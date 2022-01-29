@@ -113,7 +113,7 @@ public class FFDetection {
         static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0, 360);
         static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(540, 360);
         static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(1000, 360);
-        static final int REGION_WIDTH = 200;
+        static final int REGION_WIDTH = 250;
         static final int REGION_HEIGHT = 320;
 
         Point region1_pointA = new Point(

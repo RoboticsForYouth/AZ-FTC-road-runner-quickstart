@@ -21,6 +21,7 @@ public class RLeftCarouselStorage extends RedAutoBase {
         if (isStopRequested()) return;
         setupPos();
         detection();
+        sleep(3000);
         moveToDrop("left");
         moveToCarousel("left");
         moveToPark("left", "storage");

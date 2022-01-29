@@ -13,9 +13,9 @@ public class Wrist extends LinearOpMode{
     LinearOpMode opMode;
     
     private static final double INTAKE_POS=0.9;
-    private static final double LEVEL_1_DROP_POS=0.78;
-    private static final double LEVEL_2_DROP_POS=0.95;
-    private static final double LEVEL_3_DROP_POS=0.78;
+    private static final double LEVEL_1_DROP_POS=0.82;
+    private static final double LEVEL_2_DROP_POS=0.81;
+    private static final double LEVEL_3_DROP_POS=0.97;
     private static final double HOME_POS=0.5;
     private static final double SECURED_POS=0.3;
 

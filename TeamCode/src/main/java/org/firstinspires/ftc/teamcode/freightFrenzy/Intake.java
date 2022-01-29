@@ -35,7 +35,7 @@ public class Intake extends LinearOpMode{
     
     public void drop() {
         reverseIntake();
-        sleep(2000);
+        sleep(3000);
         stopIntake();
 
     }
