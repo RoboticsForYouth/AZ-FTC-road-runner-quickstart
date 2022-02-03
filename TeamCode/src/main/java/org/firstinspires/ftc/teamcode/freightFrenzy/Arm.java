@@ -4,11 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.text.MessageFormat;
+
 
 public class Arm extends LinearOpMode {
     
     DcMotor armMotor;
-    private int[] level = {200, 495, 765, 1007, 350};
+    private int[] level = {200, 500, 690, 980, 350, 600};
+
+    public enum ArmLevel {
+        HOME, LEVEL1, LEVEL2, LEVEL3, MOVE, ARMROTATE
+    }
     LinearOpMode opMode;
 
     public void setup() {
@@ -19,9 +25,6 @@ public class Arm extends LinearOpMode {
     public void setupPos(){
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         moveToLevel(0);
-    }
-    public Arm() {
-        opMode = this;
     }
     public Arm(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -37,6 +40,19 @@ public class Arm extends LinearOpMode {
         AZUtil.waitUntilMotorAtPos(opMode, armMotor, -80);
     }
 
+    public void moveToLevel(ArmLevel armLevel) {
+        AZUtil.setMotorTargetPostion(armMotor, level[armLevel.ordinal()], 0.6);
+        AZUtil.waitUntilMotorAtPos(opMode, armMotor, level[armLevel.ordinal()]);
+    }
+
+    public String getDisplayValues() {
+        return MessageFormat.format("Arm Position; {0}", armMotor.getCurrentPosition());
+
+    }
+
+    public boolean isBusy() {
+        return armMotor.isBusy();
+    }
     @Override
     public void runOpMode(){
         setup();
