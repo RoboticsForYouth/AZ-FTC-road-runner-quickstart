@@ -88,10 +88,4 @@ lint/tmp/
 
 .DS_Store
 .idea
-/java_pid5100.hprof
-/java_pid9979.hprof
-/java_pid11858.hprof
-/java_pid15187.hprof
-/java_pid15521.hprof
-/java_pid17689.hprof
-/java_pid18959.hprof
+*.hprof
