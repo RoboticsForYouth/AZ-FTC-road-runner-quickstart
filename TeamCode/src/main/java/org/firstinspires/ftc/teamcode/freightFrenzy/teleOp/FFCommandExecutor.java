@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.teleOp;
+package org.firstinspires.ftc.teamcode.freightFrenzy.teleOp;
 
-import org.firstinspires.ftc.teamcode.freightFrenzy.AZUtil;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
 public abstract class FFCommandExecutor {
 

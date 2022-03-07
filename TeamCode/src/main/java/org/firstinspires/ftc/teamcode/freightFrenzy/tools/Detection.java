@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.freightFrenzy;
+package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import java.util.List;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -14,10 +16,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the Freight Frenzy game elements.
- *
+ * <p>
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
+ * <p>
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
@@ -45,7 +47,7 @@ public class Detection {
         initTfod();
         if (tfod != null) {
             tfod.activate();
-          // tfod.setZoom(1.15, 16.0/9);
+            // tfod.setZoom(1.15, 16.0/9);
         }
     }
 
@@ -67,7 +69,7 @@ public class Detection {
             int count = 0;
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
 
-              // updatedRecognitions = tfod.getUpdatedRecognitions();
+            // updatedRecognitions = tfod.getUpdatedRecognitions();
 
 //            while(!linearOpMode.isStopRequested() && !(updatedRecognitions == null ||
 //                    updatedRecognitions.size() <=0) && count < 6) {
@@ -75,20 +77,17 @@ public class Detection {
 //                //linearOpMode.sleep(1000);
 //                count++;
 //            }
-            if(updatedRecognitions == null) {
+            if (updatedRecognitions == null) {
                 updatedRecognitions = tfod.getUpdatedRecognitions();
             }
             linearOpMode.telemetry.addData("updatedRecognitions", updatedRecognitions);
-            if (updatedRecognitions != null)
-            {
+            if (updatedRecognitions != null) {
                 //boolean detected = false;
-                for (Recognition recognition : updatedRecognitions)
-                {
-                    double avg = (recognition.getLeft()+recognition.getRight())/2;
-                    if(avg < 450) {
+                for (Recognition recognition : updatedRecognitions) {
+                    double avg = (recognition.getLeft() + recognition.getRight()) / 2;
+                    if (avg < 450) {
                         pos = "center";
-                    }
-                    else if(avg >= 450){
+                    } else if (avg >= 450) {
                         pos = "right";
                     }
 
@@ -104,8 +103,7 @@ public class Detection {
                     tfod.shutdown();
                 }
 
-            }
-            else {
+            } else {
                 pos = "left";
                 linearOpMode.telemetry.addData("updatedRecognitions :", "null");
                 linearOpMode.telemetry.update();
@@ -115,8 +113,7 @@ public class Detection {
             linearOpMode.sleep(200);
 
 
-        }
-        else {
+        } else {
             linearOpMode.telemetry.addData("tfod = ", "null");
             linearOpMode.telemetry.update();
         }
@@ -128,16 +125,14 @@ public class Detection {
             int count = 0;
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
 
-            if(updatedRecognitions == null) {
+            if (updatedRecognitions == null) {
                 updatedRecognitions = tfod.getUpdatedRecognitions();
             }
             linearOpMode.telemetry.addData("updatedRecognitions", updatedRecognitions);
-            if (updatedRecognitions != null)
-            {
+            if (updatedRecognitions != null) {
                 //boolean detected = false;
-                for (Recognition recognition : updatedRecognitions)
-                {
-                    double avg = (recognition.getLeft()+recognition.getRight())/2;
+                for (Recognition recognition : updatedRecognitions) {
+                    double avg = (recognition.getLeft() + recognition.getRight()) / 2;
 
                     linearOpMode.telemetry.addData("AVG", avg);
                     linearOpMode.telemetry.update();
@@ -151,14 +146,12 @@ public class Detection {
 
             }
 
-        }
-        else {
+        } else {
             linearOpMode.telemetry.addData("tfod = ", "null");
             linearOpMode.telemetry.update();
         }
         return "";
     }
-
 
 
     /**

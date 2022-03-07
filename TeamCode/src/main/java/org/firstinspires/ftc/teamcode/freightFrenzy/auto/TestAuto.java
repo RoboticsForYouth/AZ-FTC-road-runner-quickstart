@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.freightFrenzy.auto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.freightFrenzy.AZUtil;
-import org.firstinspires.ftc.teamcode.freightFrenzy.FreightTool;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 
 @TeleOp
 public class TestAuto extends LinearOpMode {

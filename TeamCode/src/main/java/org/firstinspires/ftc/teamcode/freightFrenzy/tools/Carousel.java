@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.freightFrenzy;
+package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,15 +26,18 @@ public class Carousel extends LinearOpMode {
     public Carousel() {
         opMode = this;
     }
+
     public Carousel(LinearOpMode opMode) {
         this.opMode = opMode;
         setup();
     }
+
     public void blueDuckyDrop() {
         carouselTool.setPower(DUCK_POWER);
         sleep(3500);
         carouselTool.setPower(0);
     }
+
     public void redDuckyDrop() {
         carouselTool.setPower(-DUCK_POWER);
         sleep(3500);
@@ -43,7 +46,7 @@ public class Carousel extends LinearOpMode {
 
     public void rampDrop() {
         // 1 1 2 3 5 8
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             next = first + second;
             carouselTool.setPower(OG_POWER * second);
             sleep(600);
@@ -54,7 +57,7 @@ public class Carousel extends LinearOpMode {
 
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
         setup();
         waitForStart();
 

@@ -1,52 +1,53 @@
-package org.firstinspires.ftc.teamcode.freightFrenzy;
+package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import java.text.MessageFormat;
 
-@TeleOp
-public class TurnTable extends LinearOpMode{
-    
+@Autonomous(name = "TurnTableAuto")
+public class TurnTable extends LinearOpMode {
+
     DcMotorEx turnMotor;
     Arm arm;
     LinearOpMode opMode;
-    private static final int INC = 30;
-    private static final int MAX = 235; 
-    private static final int MIN = -235;
+    private static final int INC = 100;
+    private static final int MAX = 300;
+    private static final int MIN = -300;
     private static final int TICKS_PER_ROTATION = 1120;
 
-    private static final double P = 2;
+    private static final double P = 3;
     private static final double I = 0.0;
     private static final double D = 0.0;
     private static final double F = 0.0;
 
 
-
     PIDFCoefficients pidfCoefficients = new PIDFCoefficients();
+    private boolean isIntakeMode;
 
-    public enum Direction{
+    public enum Direction {
         CLOCKWISE, COUNTER_CLOCKWISE
     }
 
-    public void setup(){
+    public void setup() {
 
         //opMode = this;
-        if(arm == null) {
+        if (arm == null) {
             arm = new Arm(opMode);
         }
         turnMotor = opMode.hardwareMap.get(DcMotorEx.class, "turnTable");
 
-        turnMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(P,I,D,F));
+        turnMotor.setPositionPIDFCoefficients(P);
+        setupPos();
         //set encoder to zero
 
     }
+
     public void setupPos() {
         turnMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         AZUtil.setMotorTargetPostion(turnMotor, 0, 0.2);
@@ -58,77 +59,104 @@ public class TurnTable extends LinearOpMode{
         this.arm = arm;
         setup();
     }
-    
-    
-     public void turnLeft() {
-        int pos = turnMotor.getCurrentPosition() + INC;
-        if(pos > MAX)
-            return;
-        arm.moveToLevel(4);
-         turnToPos(pos, 0.5);
 
-     }
+
+    public void turnLeft() {
+        int pos = turnMotor.getCurrentPosition() + INC;
+        if (pos < MIN)
+            return;
+        turnToPos(pos, 1, false);
+
+    }
+
     public void turnRight() {
         int pos = turnMotor.getCurrentPosition() - INC;
-        if(pos < MIN) 
+        if (pos >  MAX)
             return;
-        arm.moveToLevel(4);
-        turnToPos(pos, 0.5);
-    } 
+        turnToPos(pos, 1, false);
+    }
+
     public void turnTo0() {
-        arm.moveToLevel(4);
-        turnToPos(0, 0.2);
+        double position = turnMotor.getCurrentPosition();
+        if (!(position < 3 && position > -3)) {
+            arm.moveToMinLevel(Arm.ArmLevel.MOVE);
+            turnToPos(0, 1);
+        }
     }
 
     public TurnTable() {
         super();
     }
+
     public void turnRamp() {
         double power = 0.2;
         int pos = turnMotor.getCurrentPosition() + 10;
         AZUtil.setMotorTargetPostion(turnMotor, 350, power);
-        while(!AZUtil.isAtPos(turnMotor, 350)) {
+        while (!AZUtil.isAtPos(turnMotor, 350)) {
             sleep(500);
-            if(power >= 0.25)
+            if (power >= 0.25)
                 power -= 0.1;
             turnMotor.setPower(power);
         }
     }
 
-    public void turnToPos(int pos, double power) {
+    public void turnToPos(int pos, double power, boolean armLevelCheck) {
+        if(armLevelCheck) {
+            arm.moveToMinLevel(Arm.ArmLevel.MOVE);
+        }
+
         AZUtil.setMotorTargetPostion(turnMotor, pos, power);
         AZUtil.waitUntilMotorAtPos(opMode, turnMotor, pos);
     }
+    public void turnToPos(int pos, double power) {
+         turnToPos(pos, power, true);
+    }
 
-    public void turnTo(Direction direction, int deg){
 
+    public void turnTo(Direction direction, int deg) {
+      turnTo(direction, deg, true);
+    }
 
-        double ticksPerDeg = 0.3;
-        int ticks = (int) (deg / ticksPerDeg);
+    void turnTo(Direction direction, int deg, boolean armLevelCheck) {
+        double degPerTick = 0.105;
+        int ticks = (int) (deg / degPerTick);
         //int ticks = 90/3
 
         opMode.telemetry.addData("TurnTable Ticks ", ticks);
         opMode.telemetry.update();
 
-        if(direction == Direction.CLOCKWISE) {
+        if (direction == Direction.CLOCKWISE) {
             ticks = -ticks;
         }
 
-        turnToPos(ticks, 1);
-
-
+        turnToPos(ticks, 1, armLevelCheck);
     }
+
+    public void turnInc(Direction direction){
+        int sign =1;
+        if (direction == Direction.CLOCKWISE) {
+            sign = -sign;
+        }
+        int pos = turnMotor.getCurrentPosition() + (INC*sign);
+        turnToPos( pos, 1,false);
+    }
+
 
     public String getDisplayValues() {
         return MessageFormat.format("TurnTable Position; {0}", turnMotor.getCurrentPosition());
 
     }
 
+    public void stopIntakeMode() {
+        isIntakeMode = false;
+    }
+
     public boolean isBusy() {
         return turnMotor.isBusy();
     }
+
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
         opMode = this;
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addLine("Initialized");
@@ -136,37 +164,12 @@ public class TurnTable extends LinearOpMode{
         setup();
 
         waitForStart();
-        /*
-        for(int i = 0; i < 8; i++) {
-            turnRight();
-            sleep(200);
-        }
-        turnTo0();
-        sleep(1000);
 
-        for(int i = 0; i < 8; i++) {
-            turnLeft();
-            sleep(200);
-        }
-        turnTo0();
-        sleep(1000);
-        */
-        arm.moveToLevel(Arm.ArmLevel.ARMROTATE);
         turnTo(Direction.CLOCKWISE, 90);
-        //telemetry.addData("PIDFCoefficients", turnMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
-
-        //telemetry.update();
-        while(isBusy()) {
-            //sleep(100);
-            telemetry.addLine(getDisplayValues());
-            telemetry.update();
-        }
+        AZUtil.print(telemetry, "Turn Table Position 100", turnMotor.getCurrentPosition());
+        turnTo0();
+        AZUtil.print(telemetry, "Turn Table Position 0", turnMotor.getCurrentPosition());
         sleep(5000);
-
-        turnTo(Direction.CLOCKWISE, 0);
-        arm.moveToLevel(Arm.ArmLevel.MOVE);
-        sleep(10000);
-
 
 
     }
