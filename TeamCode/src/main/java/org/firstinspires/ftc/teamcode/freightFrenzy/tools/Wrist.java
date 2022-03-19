@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
+import android.util.Pair;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Autonomous
 public class Wrist extends LinearOpMode {
@@ -16,7 +21,7 @@ public class Wrist extends LinearOpMode {
     private static final double INTAKE_POS = 0.85;
     private static final double LEVEL_1_DROP_POS = 0.7;
     private static final double LEVEL_2_DROP_POS = 0.7;
-    private static final double LEVEL_3_DROP_POS = 0.55;
+    private static final double LEVEL_3_DROP_POS = 0.43;
     private static final double HOME_POS = 1;
     private static final double SECURED_POS = 0.7;
 
@@ -24,7 +29,7 @@ public class Wrist extends LinearOpMode {
         HOME (1.0),
         LEVEL1(0.7),
         LEVEL2(0.7),
-        LEVEL3(0.55),
+        LEVEL3(0.35),
         INTAKE(.85);
 
         private double value;
@@ -104,8 +109,11 @@ public class Wrist extends LinearOpMode {
     }
 
     private void printState(String s) {
-        AZUtil.print(telemetry, "Current Pos", this.wrist.getPosition());
-        AZUtil.print(telemetry, "Current State", s);
+        AZUtil.print(telemetry,
+                Arrays.asList(
+                        new Pair<>("Current Pos", this.wrist.getPosition()),
+                        new Pair<>("Current State", s)
+                ));
     }
 
 

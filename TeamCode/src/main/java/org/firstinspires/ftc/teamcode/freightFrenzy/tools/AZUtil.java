@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
+import android.os.Build;
+import android.util.Pair;
+
+import androidx.annotation.RequiresApi;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,9 +53,11 @@ public class AZUtil {
     static HashMap<String, ExecutorService> poolMap = new HashMap<>();
 
     public static final String TURN_TABLE = "TurnTable";
+    public static final String FREIGHT_INTAKE_SENSOR = "FreightIntakeSensor";
 
     static {
         poolMap.put(TURN_TABLE, Executors.newFixedThreadPool(1));
+        poolMap.put(FREIGHT_INTAKE_SENSOR, Executors.newFixedThreadPool(1));
     }
 
     // todo: write your code here
@@ -70,9 +78,18 @@ public class AZUtil {
         pool.execute(r);
     }
 
+    public static void print(Telemetry telemetry, List<Pair<String, Object>> list) {
+        list.stream().forEach(p ->printMap.put(p.first, p.second));
+        printMapToTelemetry(telemetry);
+    }
+
+    private static void printMapToTelemetry(Telemetry telemetry){
+        telemetry.addLine(String.valueOf(printMap));
+        telemetry.update();
+    }
     public static void print(Telemetry telemetry, String str, Object obj) {
         printMap.put(str, obj);
-        telemetry.addLine(String.valueOf(printMap));
+        printMapToTelemetry(telemetry);
 //        Set<String> strings = printMap.keySet();
 //        Iterator iterator = strings.iterator();
 //        while (iterator.hasNext()) {
@@ -80,7 +97,6 @@ public class AZUtil {
 //            telemetry.addData(key, printMap.get(key));
 //
 //        }
-        telemetry.update();
     }
 
     public static boolean isMotorAtPosition(DcMotor motor, int pos){

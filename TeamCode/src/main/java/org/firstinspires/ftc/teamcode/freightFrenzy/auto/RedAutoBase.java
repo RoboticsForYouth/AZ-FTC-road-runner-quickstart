@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Carousel;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
@@ -18,12 +19,13 @@ public abstract class RedAutoBase extends LinearOpMode {
     FreightTool freightTool;
     Carousel duckyTool;
     LinearOpMode opMode;
-    int pos;
+    Arm.ArmLevel pos;
     Trajectory drop, drop2, drop3, duck, duck2, duck3, park, park2, park3, move, back;
     boolean carousel = false;
     int originX = 0;
     int originY = 0;
     int originHeading = 0;
+    int dropX, dropY, dropHeading, alignX, alignY, duckX, duckY, parkX, parkY;
 
 
     public void initAuto() {
@@ -50,39 +52,49 @@ public abstract class RedAutoBase extends LinearOpMode {
 
     public void moveToDrop(String side) {
         if (side.equals("left")) { //LEFT
-            drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
-                    .lineToSplineHeading(new Pose2d(originX + 22, originY + 12, originHeading)).build();
+//            drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
+//                    .lineToSplineHeading(new Pose2d(originX + 22, originY + 12, originHeading)).build();
 
-            if (pos == 3) {
-                drop2 = drive.trajectoryBuilder(drop.end())
+            if (pos == Arm.ArmLevel.LEVEL3) {
+                drop2 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                         .lineToSplineHeading(new Pose2d(originX + 25, originY + 22, originHeading)).build();
-            } else if (pos == 1) {
-                drop2 = drive.trajectoryBuilder(drop.end())
+            } else if (pos == Arm.ArmLevel.LEVEL1) {
+                drop2 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                         .lineToSplineHeading(new Pose2d(originX + 24, originY + 16, originHeading)).build();
             } else {
-                drop2 = drive.trajectoryBuilder(drop.end())
+                drop2 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                         .lineToSplineHeading(new Pose2d(originX + 24, originY + 17, originHeading)).build();
             }
-            drop3 = drive.trajectoryBuilder(drop.end())
+            drop3 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                     .lineToSplineHeading(new Pose2d(originX + 23, originY + 10, originHeading)).build();
 
 
         } else { //RIGHT
-            drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
-                    .lineToSplineHeading(new Pose2d(originX - 24, originY + 12, originHeading)).build();
+//            drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
+//                    .lineToSplineHeading(new Pose2d(originX - 24, originY + 12, originHeading)).build();
 
-            if (pos == 3) {
-                drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX - 23, originY + 22, originHeading)).build();
-            } else if (pos == 1) {
-                drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX - 23, originY + 16, originHeading)).build();
+            if (pos == Arm.ArmLevel.LEVEL3) {
+                dropX = -14;
+                dropY = 22;
+                dropHeading = 135;
+            } else if( pos == Arm.ArmLevel.LEVEL2) {
+                dropX = -8;
+                dropY = 24;
+                dropHeading = 135;
             } else {
-                drop2 = drive.trajectoryBuilder(drop.end())
-                        .lineToSplineHeading(new Pose2d(originX - 23, originY + 17, originHeading)).build();
+                dropX = -5;
+                dropY = 36;
+                dropHeading = 180;
+                drop2 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
+                        .lineToSplineHeading(new Pose2d(originX, originY, originHeading))
+                        .lineToSplineHeading(new Pose2d())
+                        .build();
+                //drive.followTrajectory(drop2);
+
             }
-            drop3 = drive.trajectoryBuilder(drop.end())
-                    .lineToSplineHeading(new Pose2d(originX - 23, originY + 15, originHeading)).build();
+            drop3 = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
+                    .lineToSplineHeading(new Pose2d(originX + dropX, originY + dropY, originHeading + Math.toRadians(dropHeading))).build();
+
 
         }
 
@@ -95,8 +107,9 @@ public abstract class RedAutoBase extends LinearOpMode {
                     }
                 }
         );
-        drive.followTrajectory(drop);
-        drive.followTrajectory(drop2);
+        drive.followTrajectory(drop3);
+       //drive.followTrajectory(drop);
+        //drive.followTrajectory(drop2);
         sleep(1000);
         freightTool.drop();
         AZUtil.runInParallel(
@@ -108,7 +121,7 @@ public abstract class RedAutoBase extends LinearOpMode {
                     }
                 }
         );
-        drive.followTrajectory(drop3);
+
     }
 
     public void moveToCarousel(String side) {

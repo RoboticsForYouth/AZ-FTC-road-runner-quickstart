@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Carousel;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
@@ -18,7 +19,7 @@ public abstract class BlueAutoBase extends LinearOpMode {
     FreightTool freightTool;
     Carousel duckyTool;
     LinearOpMode opMode;
-    int pos;
+    Arm.ArmLevel pos;
     Trajectory drop, drop2, drop3, duck, duck2, duck3, park0, park, park2, park3, move, back;
     boolean carousel = false;
     int originX = 0;
@@ -53,10 +54,10 @@ public abstract class BlueAutoBase extends LinearOpMode {
             drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                     .lineToSplineHeading(new Pose2d(originX + 22, originY + 12, originHeading)).build();
 
-            if (pos == 3) {
+            if (pos == Arm.ArmLevel.LEVEL3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX + 23, originY + 22, originHeading)).build();
-            } else if (pos == 1) {
+            } else if (pos == Arm.ArmLevel.LEVEL3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX + 22, originY + 17, originHeading)).build();
             } else {
@@ -71,10 +72,10 @@ public abstract class BlueAutoBase extends LinearOpMode {
             drop = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
                     .lineToSplineHeading(new Pose2d(originX - 24, originY + 12, originHeading)).build();
 
-            if (pos == 3) {
+            if (pos == Arm.ArmLevel.LEVEL3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX - 24, originY + 21, originHeading)).build();
-            } else if (pos == 1) {
+            } else if (pos == Arm.ArmLevel.LEVEL3) {
                 drop2 = drive.trajectoryBuilder(drop.end())
                         .lineToSplineHeading(new Pose2d(originX - 22, originY + 16, originHeading)).build();
             } else {

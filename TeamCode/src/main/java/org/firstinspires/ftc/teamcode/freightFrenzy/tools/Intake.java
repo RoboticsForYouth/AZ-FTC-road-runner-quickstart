@@ -28,11 +28,15 @@ public class Intake extends LinearOpMode {
     }
 
     public void intake() {
-        intake.setPower(INTAKE_POWER);
+        if( intake.getPower() >= 0) {
+            intake.setPower(INTAKE_POWER);
+        }
     }
 
     public void reverseIntake() {
-        intake.setPower(DROP_POWER);
+        if( intake.getPower() <=0 ) {
+            intake.setPower(DROP_POWER);
+        }
     }
 
     public void drop() {
@@ -40,6 +44,10 @@ public class Intake extends LinearOpMode {
         sleep(2000);
         stopIntake();
 
+    }
+
+    public void dropInstant() {
+        reverseIntake();
     }
 
 

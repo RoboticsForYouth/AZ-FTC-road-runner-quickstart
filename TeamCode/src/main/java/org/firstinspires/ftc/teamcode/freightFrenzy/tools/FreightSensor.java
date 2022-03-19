@@ -55,6 +55,7 @@ public class FreightSensor extends LinearOpMode {
         );
     }
 
+
     public boolean isFreightDetected() {
         return freightDetected;
     }

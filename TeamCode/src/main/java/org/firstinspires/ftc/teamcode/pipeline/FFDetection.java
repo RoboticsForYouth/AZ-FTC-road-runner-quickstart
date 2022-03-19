@@ -24,6 +24,7 @@ package org.firstinspires.ftc.teamcode.pipeline;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -80,16 +81,16 @@ public class FFDetection {
 
     }
 
-    public int getPos() {
+    public Arm.ArmLevel getPos() {
         switch (pipeline.getAnalysis()) {
             case LEFT:
-                return 1;
+                return Arm.ArmLevel.LEVEL1;
             case CENTER:
-                return 2;
+                return Arm.ArmLevel.LEVEL2;
             case RIGHT:
-                return 3;
+                return Arm.ArmLevel.LEVEL3;
         }
-        return 3;
+        return Arm.ArmLevel.LEVEL3;
     }
 
 

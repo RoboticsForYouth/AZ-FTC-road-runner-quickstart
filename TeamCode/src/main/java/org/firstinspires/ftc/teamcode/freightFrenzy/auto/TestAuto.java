@@ -4,37 +4,48 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.opencv.core.Mat;
 
-@TeleOp
+@Autonomous (name = "1TestAuto")
 public class TestAuto extends LinearOpMode {
     Trajectory sharedHubDrop;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         FreightTool freightTool = new FreightTool(this);
-        waitForStart();
-        freightTool.setupPos();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        boolean run = true;
-        while(opModeIsActive()) {
-            if(run) {
+        freightTool.setupPos();
+        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+        TrajectorySequence trajectorySequence = drive.trajectorySequenceBuilder(startPose)
+                .lineToSplineHeading(new Pose2d(-9, 33, Math.toRadians(150)))
+                .addDisplacementMarker(()->{ freightTool.drop();})
+                .back(2)
+                .lineToSplineHeading(startPose)
+                .UNSTABLE_addTemporalMarkerOffset(-2, ()->{freightTool.intake();})
+                .forward(30)
+                .build();
+        waitForStart();
+        AZUtil.runInParallel(()->{freightTool.setAllianceHubDrop();});
+        drive.followTrajectorySequence(trajectorySequence);
 
-                autoSharedHubDrop(drive, freightTool);
+        //loop to start collection
+        boolean freightDetected = false;
 
 
-                //sleep(1000);
-                run = false;
-            }
-            telemetry.addLine(freightTool.getDisplayValues());
-            telemetry.update();
-        }
+        sleep(5000);
+
+        telemetry.addLine(freightTool.getDisplayValues());
+        telemetry.update();
 
 
     }

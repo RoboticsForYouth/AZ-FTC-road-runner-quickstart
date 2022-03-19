@@ -67,6 +67,10 @@ public class FreightTool extends LinearOpMode {
         arm.moveDown();
     }
 
+    public void dropFreightTeleOp() {
+        intake.dropInstant();
+    }
+
 
     private enum ToolState {
         HOME, SHARED_HUB_DROP, ALLIANCE_HUB_DROP, INTAKE, MOVE, DROP, TAPE_DRIVE
@@ -80,7 +84,7 @@ public class FreightTool extends LinearOpMode {
         intake = new Intake(opMode);
         wrist = new Wrist(opMode);
         sensor = new FreightSensor(opMode);
-        intakeSensor = new FreightInIntakeSensor(opMode);
+//        intakeSensor = new FreightInIntakeSensor(opMode);
     }
 
     public void setupPos() {
@@ -97,11 +101,11 @@ public class FreightTool extends LinearOpMode {
         setup();
     }
 
-    public void prepForDrop(int level) {
+    public void prepForDrop(Arm.ArmLevel level) {
         intake.stopIntake();
-        arm.moveToLevel(level);
+        arm.moveToMinLevel(level);
         // wrist.setSecuredPos();
-        turnTable.turnToPos(280, 0.2);
+        //turnTable.turnToPos(280, 0.2);
     }
 
     public void intake() {
@@ -110,19 +114,19 @@ public class FreightTool extends LinearOpMode {
 
     //stop intake when freight detected
     public void intakeWithSensor(int deg){
-        AZUtil.runInParallelPool(
-                () -> {
-                    int tryCount =0;
-                    double sensorDistance = intakeSensor.getSensorDistance();
-                    //try for max 5 secs
-                    while (sensorDistance > DETECTION_DISTANCE_CM && tryCount < 100) {
-                        sensorDistance = intakeSensor.getSensorDistance();
-//                        AZUtil.print(telemetry,"Intake Sensor (cm):", sensorDistance);
-                        sleep(50);
-                        tryCount++;
-                    }
-                    intake.stopIntake();
-                });
+//        AZUtil.runInParallelPool(
+//                () -> {
+//                    int tryCount =0;
+//                    double sensorDistance = intakeSensor.getSensorDistance();
+//                    //try for max 5 secs
+//                    while (sensorDistance > DETECTION_DISTANCE_CM && tryCount < 100) {
+//                        sensorDistance = intakeSensor.getSensorDistance();
+////                        AZUtil.print(telemetry,"Intake Sensor (cm):", sensorDistance);
+//                        sleep(50);
+//                        tryCount++;
+//                    }
+//                    intake.stopIntake();
+//                });
         intakeWithAngle(deg);
     }
 
@@ -150,7 +154,7 @@ public class FreightTool extends LinearOpMode {
         intake.stopIntake();
         wrist.homePos();
         sleep(1000);
-        arm.moveToLevel(Arm.ArmLevel.HOME);
+        arm.moveToMinLevel(Arm.ArmLevel.HOME);
     }
 
 
@@ -185,8 +189,8 @@ public class FreightTool extends LinearOpMode {
     }
 
     public void setAllianceHubDrop() {
-        intake.stopIntake();
         wrist.setLevel3DropPos();
+        intake.stopIntake();
         arm.moveToLevel(Arm.ArmLevel.LEVEL3);
     }
 

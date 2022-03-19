@@ -19,10 +19,10 @@ public class Arm extends LinearOpMode {
         HOME(0), //-80
         LEVEL1(600), //720
         LEVEL2(900), //690
-        LEVEL3(1400), //1600
+        LEVEL3(1425), //1600
         MOVE(400), //700
         ARM_ROTATE(275), //625
-        INTAKE(200), //350
+        INTAKE(205), //350
         TAPE_DRIVE(500); //750
 
         private int value;
