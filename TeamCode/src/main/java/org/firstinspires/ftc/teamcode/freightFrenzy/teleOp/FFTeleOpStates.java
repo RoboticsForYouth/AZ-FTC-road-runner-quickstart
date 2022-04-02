@@ -6,12 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Carousel;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightInIntakeSensor;
@@ -40,14 +38,15 @@ public class FFTeleOpStates extends LinearOpMode {
     LinearOpMode opMode;
     private boolean isDuckyToolStopped;
     private boolean isIntakeOn;
-    private boolean warehouseToHub=false;
+    private boolean warehouseToHub = false;
     private SampleMecanumDrive drive;
     private TrajectorySequence allianceToWarehouseTrajectorySequence;
+    private boolean isSharedHubAubAuto = false;
+    private boolean sharedHubComplete;
 
     private enum GamePad2Mode {
         NONE, TAPE_DRIVE, RESET_ARM, RESET_INTAKE
     }
-
 
 
     GamePad2Mode gamepad2Mode = GamePad2Mode.NONE;
@@ -85,11 +84,12 @@ public class FFTeleOpStates extends LinearOpMode {
         while (opModeIsActive()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
+                            -gamepad1.left_stick_y * .5,
+                            -gamepad1.left_stick_x * .5,
+                            -gamepad1.right_stick_x * .5
                     )
             );
+
 
             drive.update();
 
@@ -115,40 +115,21 @@ public class FFTeleOpStates extends LinearOpMode {
     private void orgLoop() {
         if (gamepad1.right_bumper) {
 //            intakeSensor.startDetection();
-            AZUtil.runInParallel( ()->{freightTool.intake();});
+            AZUtil.runInParallel(() -> {
+                freightTool.intake();
+            });
 //            while(intakeSensor.isFreightDetected())
 //                freightTool.stopIntake();
 //            intakeSensor.stopDetection();
         }
-
-        if (gamepad1.x) { //move pos
-            AZUtil.runInParallel( ()->{freightTool.move();});
-        }
-
-        if(gamepad1.y){
-            if(!warehouseToHub) {
-                warehouseToHub = true;
-                moveToAllianceHub();
+        if (gamepad1.left_bumper) {
+            if (!isSharedHubAubAuto) {
+                isSharedHubAubAuto = true;
+                autoSharedHubDrop();
+            } else {
+                autoSharedHubToWarehouse();
+                isSharedHubAubAuto = false;
             }
-            else{
-                warehouseToHub = false;
-                moveToWarehouse();
-            }
-        }
-
-        if (gamepad1.dpad_up) { //move to alliance hub pos
-            AZUtil.runInParallel( ()->{freightTool.allianceHub();});
-        }
-
-        if (gamepad1.dpad_down) { //move to shared hub pos
-            AZUtil.runInParallel( ()->{freightTool.sharedHub();});
-        }
-
-        if(gamepad1.dpad_left){
-            freightTool.turnInc(TurnTable.Direction.COUNTER_CLOCKWISE);
-        }
-        if(gamepad1.dpad_right){
-            freightTool.turnInc(TurnTable.Direction.CLOCKWISE);
         }
         if (gamepad1.a) { //drop freight
             freightTool.dropFreightTeleOp();
@@ -159,33 +140,128 @@ public class FFTeleOpStates extends LinearOpMode {
             isIntakeOn = false;
         }
 
-        if (gamepad1.right_trigger > 0.1) {
-            AZUtil.runInParallel(()->{
-                duckyTool.blueDuckyDrop();
-                isDuckyToolStopped = false;
+        if (gamepad1.x) { //move pos
+            AZUtil.runInParallel(() -> {
+                freightTool.move();
             });
+        }
 
-        } else if (gamepad1.left_trigger > 0.1) {
-            AZUtil.runInParallel(()->{
-                duckyTool.redDuckyDrop();
-                isDuckyToolStopped = false;
-            });
-
-        } else {
-            if (!isDuckyToolStopped) {
-                AZUtil.runInParallel(()->{
-                    duckyTool.stopDuckyTool();
-                    isDuckyToolStopped = true;
-                });
-
+        if (gamepad1.y) {
+            if (!warehouseToHub) {
+                warehouseToHub = true;
+                moveToAllianceHub();
+            } else {
+                warehouseToHub = false;
+                moveToWarehouse();
             }
         }
+
+        if (gamepad1.dpad_up) { //move to alliance hub pos
+            AZUtil.runInParallel(() -> {
+                freightTool.allianceHub();
+            });
+        }
+
+        if (gamepad1.dpad_down) { //move to shared hub pos
+            AZUtil.runInParallel(() -> {
+                freightTool.sharedHub();
+            });
+        }
+
+        if (gamepad1.dpad_left) {
+            freightTool.turnInc(TurnTable.Direction.COUNTER_CLOCKWISE);
+        }
+        if (gamepad1.dpad_right) {
+            freightTool.turnInc(TurnTable.Direction.CLOCKWISE);
+        }
+
+        if (gamepad1.left_stick_button) {
+            autoSharedHubOverBarrierAuto();
+
+//            if (!isSharedHubAubAuto) {
+//            } else {
+//                autoWarehouseOverBarrierAuto();
+//            }
+        }
+
+        if (gamepad1.right_trigger > 0.1) {
+
+            duckyTool.blueDuckyDrop(gamepad1.right_trigger);
+            isDuckyToolStopped = false;
+        } else if (gamepad1.left_trigger > 0.1) {
+            duckyTool.redDuckyDrop(gamepad1.left_trigger);
+            isDuckyToolStopped = false;
+        } else {
+            if (!isDuckyToolStopped) {
+                duckyTool.stopDuckyTool();
+                isDuckyToolStopped = true;
+            }
+        }
+    }
+
+    private void autoWarehouseOverBarrierAuto() {
+        AZUtil.runInParallel(() -> {
+            freightTool.intake();
+        });
+    }
+
+    private void autoSharedHubOverBarrierAuto() {
+        //Set initial to zero
+//        Pose2d pose2d = new Pose2d();
+//        drive.setPoseEstimate(pose2d);
+//        Trajectory trajectory = drive.trajectoryBuilder(pose2d, true)
+//                .back(20)
+//                .build();
+        if (!isSharedHubAubAuto)
+            isSharedHubAubAuto = true;
+            AZUtil.runInParallel(() -> {
+            freightTool.turn180ToSharedHub();
+            sharedHubComplete = true;
+        });
+//        drive.followTrajectory(trajectory);
+    }
+
+
+    private void autoSharedHubToWarehouse() {
+        //forward up 24 inches
+        //in parallel move turntable to 120 degrees clockwise
+        drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
+        Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .forward(30)
+                .addTemporalMarker(0, () -> {
+                    AZUtil.runInParallel(() -> {
+                        freightTool.turnTo0();
+
+                    });
+                })
+                .addTemporalMarker(2, () -> {
+                    AZUtil.runInParallel(() -> {
+                        freightTool.intake();
+                    });
+                })
+                .build();
+        drive.followTrajectory(trajectory);
+    }
+
+    private void autoSharedHubDrop() {
+        //back up 24 inches
+        //in parallel move turntable to 120 degrees clockwise
+        drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
+        Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .back(22)
+                .addTemporalMarker(0, () -> {
+                    freightTool.prepSharedHubDrop();
+                })
+                .build();
+        drive.followTrajectory(trajectory);
     }
 
     private void moveToAllianceHub() {
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
         drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
-        AZUtil.runInParallel( ()-> {freightTool.allianceHub();});
+        AZUtil.runInParallel(() -> {
+            freightTool.allianceHub();
+        });
         Pose2d poseEstimate = drive.getPoseEstimate();
         Trajectory trajectory = getMoveToAllianceHubTrajectory(poseEstimate);
 
@@ -195,8 +271,8 @@ public class FFTeleOpStates extends LinearOpMode {
     @NonNull
     private Trajectory getMoveToAllianceHubTrajectory(Pose2d poseEstimate) {
         Trajectory trajectory = drive.trajectoryBuilder(poseEstimate, true)
-                .splineToSplineHeading(new Pose2d(poseEstimate.getX()-30, poseEstimate.getY()+29,
-                        Math.toRadians(poseEstimate.getHeading()+90)), Math.toRadians(30),
+                .splineToSplineHeading(new Pose2d(poseEstimate.getX() - 30, poseEstimate.getY() + 21,
+                                Math.toRadians(poseEstimate.getHeading() + 90)), Math.toRadians(30),
                         SampleMecanumDrive.getVelocityConstraint(70, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(40))
                 .build();
@@ -208,7 +284,7 @@ public class FFTeleOpStates extends LinearOpMode {
         Pose2d poseEstimate = drive.getPoseEstimate();
         allianceToWarehouseTrajectorySequence = getAllianceToWarehouseTrajectorySequence(poseEstimate);
         drive.followTrajectorySequence(allianceToWarehouseTrajectorySequence);
-        AZUtil.runInParallel(()->{freightTool.intake();});
+//        AZUtil.runInParallel(()->{freightTool.intake();});
     }
 
     private TrajectorySequence getAllianceToWarehouseTrajectorySequence(Pose2d poseEstimate) {
@@ -218,11 +294,16 @@ public class FFTeleOpStates extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(70, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(40))
                 .forward(24)
+                .addTemporalMarker(2, () -> {
+                    AZUtil.runInParallel(() -> {
+                        freightTool.intake();
+                    });
+                })
                 .build();
         return trajectory;
     }
 
-    private enum State{
+    private enum State {
         INIT, DRIVE_ONLY, INTAKE, CAROUSEL, CAP, DELIVERY_SHARED_HUB, DELIVERY_LEVEL_1, DELIVERY_LEVEL_2,
         DELIVERY_LEVEL_3
     }

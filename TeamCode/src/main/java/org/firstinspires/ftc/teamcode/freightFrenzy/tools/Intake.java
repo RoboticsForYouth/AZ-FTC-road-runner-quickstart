@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.freightFrenzy.tools;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 @Autonomous(name = "IntakeAuto")
@@ -28,15 +27,11 @@ public class Intake extends LinearOpMode {
     }
 
     public void intake() {
-        if( intake.getPower() >= 0) {
-            intake.setPower(INTAKE_POWER);
-        }
+        intake.setPower(INTAKE_POWER);
     }
 
     public void reverseIntake() {
-        if( intake.getPower() <=0 ) {
-            intake.setPower(DROP_POWER);
-        }
+        intake.setPower(DROP_POWER);
     }
 
     public void drop() {
@@ -48,13 +43,14 @@ public class Intake extends LinearOpMode {
 
     public void dropInstant() {
         reverseIntake();
+        while( intake.getPower() == 0){
+            opMode.sleep(100);
+        }
     }
 
 
     public void stopIntake() {
-        if(intake.getPower() != 0) {
-            intake.setPower(0);
-        }
+        intake.setPower(0);
     }
 
     public void timeIntake(int ms) {

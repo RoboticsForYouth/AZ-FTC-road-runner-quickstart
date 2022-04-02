@@ -44,7 +44,7 @@ public abstract class BlueAutoBase extends LinearOpMode {
     }
 
     public void detection() {
-        pos = cam.getPos();
+        pos = Arm.ArmLevel.LEVEL3;
         telemetry.addData("Position", pos);
         telemetry.update();
     }

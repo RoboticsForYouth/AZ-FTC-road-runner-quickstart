@@ -12,17 +12,19 @@ public class Arm extends LinearOpMode {
     private static final int INC = 30;
     DcMotor armMotor;
     //Need to set Home level to -80 because it needs that extra momentum to go to zero position
-    private int[] level = {0, -80, 700, 690, 1500, 350, 600, 300}; //OLD!!!!!!
+    //OLD!!!!!!
 
     public enum ArmLevel {
         ZERO(0), //0
         HOME(0), //-80
-        LEVEL1(600), //720
+        LEVEL1(550), //720
+        SHARED_HUB(450), //720
         LEVEL2(900), //690
-        LEVEL3(1425), //1600
+        LEVEL3(1300), //1600
+
         MOVE(400), //700
-        ARM_ROTATE(275), //625
-        INTAKE(205), //350
+        ARM_ROTATE(600), //625
+        INTAKE(0), //350
         TAPE_DRIVE(500); //750
 
         private int value;
@@ -58,11 +60,6 @@ public class Arm extends LinearOpMode {
 
     public Arm() {
         super();
-    }
-
-    public void moveToLevel(int index) {
-        AZUtil.setMotorTargetPostion(armMotor, level[index], 0.6);
-        AZUtil.waitUntilMotorAtPos(opMode, armMotor, level[index]);
     }
 
     public void moveTo0() {
@@ -115,6 +112,14 @@ public class Arm extends LinearOpMode {
 
         setupPos();
 
+        moveToLevel(ArmLevel.INTAKE);
+        sleep(1000);
+        moveToLevel(ArmLevel.LEVEL3);
+        sleep(1000);
+        moveToLevel(ArmLevel.LEVEL1);
+        sleep(1000);
+        moveToLevel(ArmLevel.MOVE);
+        sleep(1000);
         moveToLevel(ArmLevel.INTAKE);
         sleep(2000);
     }

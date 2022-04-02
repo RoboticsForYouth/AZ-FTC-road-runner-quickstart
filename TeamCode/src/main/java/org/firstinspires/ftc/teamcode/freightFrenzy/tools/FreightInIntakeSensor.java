@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class FreightInIntakeSensor extends LinearOpMode {
     DistanceSensor sensor;
     LinearOpMode opMode = null;
-    public final static double DETECTION_DISTANCE_CM = 10;
+    public final static double DETECTION_DISTANCE_CM = 7;
     private boolean freightDetected = false;
     private boolean stopDetection = false;
     private Telemetry telemetry = null;
@@ -35,16 +35,17 @@ public class FreightInIntakeSensor extends LinearOpMode {
     }
 
     public void startDetection() {
+        freightDetected = false;
+        stopDetection = false;
+
         AZUtil.runInParallelPool(
                 () -> {
-                    freightDetected = false;
-                    stopDetection = false;
                     double sensorDistance = getSensorDistance();
-                    while (sensorDistance > DETECTION_DISTANCE_CM && !stopDetection) {
+                     do {
                         sensorDistance = getSensorDistance();
                         AZUtil.print(telemetry,"Intake Sensor (cm):", sensorDistance);
                         sleep(50);
-                    }
+                    } while (sensorDistance > DETECTION_DISTANCE_CM && !stopDetection);
                     freightDetected = true;
                 });
     }
@@ -63,7 +64,7 @@ public class FreightInIntakeSensor extends LinearOpMode {
         setUp();
         waitForStart();
         while (opModeIsActive()) {
-            AZUtil.print(telemetry, "Object distance: ", getSensorDistance());
+            AZUtil.print(opMode.telemetry, "Object distance: ", getSensorDistance());
         }
     }
 }

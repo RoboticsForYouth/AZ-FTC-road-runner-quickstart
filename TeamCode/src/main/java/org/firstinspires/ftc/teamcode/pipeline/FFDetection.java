@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode.pipeline;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -45,10 +46,14 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * 100% accurate) method of detecting the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
-public class FFDetection {
+@Autonomous
+public class FFDetection extends  LinearOpMode{
     OpenCvWebcam webcam;
     TSEPosDeterminationPipeline pipeline;
     LinearOpMode opMode;
+
+    public FFDetection() {
+    }
 
     public FFDetection(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -81,16 +86,16 @@ public class FFDetection {
 
     }
 
-    public Arm.ArmLevel getPos() {
+    public int getPos() {
         switch (pipeline.getAnalysis()) {
             case LEFT:
-                return Arm.ArmLevel.LEVEL1;
+                return 1;
             case CENTER:
-                return Arm.ArmLevel.LEVEL2;
+                return 2;
             case RIGHT:
-                return Arm.ArmLevel.LEVEL3;
+                return 3;
         }
-        return Arm.ArmLevel.LEVEL3;
+        return 3;
     }
 
 
@@ -295,6 +300,32 @@ public class FFDetection {
          */
         public TSEPosition getAnalysis() {
             return position;
+        }
+    }
+
+    @Override
+    public void runOpMode() {
+        FFDetection cam = new FFDetection(this);
+        cam.setup();
+        int pos = cam.getPos();
+        telemetry.addData("Pos", pos);
+        telemetry.update();
+        sleep(4000);
+        pos = cam.getPos();
+        telemetry.addData("Pos", pos);
+        telemetry.update();
+        super.waitForStart();
+
+
+        int count=0;
+        while(opModeIsActive()) {
+
+            pos = cam.getPos();
+            telemetry.addData("count", count);
+            telemetry.addData("Pos", pos);
+            telemetry.update();
+            sleep(2000);
+            count++;
         }
     }
 }

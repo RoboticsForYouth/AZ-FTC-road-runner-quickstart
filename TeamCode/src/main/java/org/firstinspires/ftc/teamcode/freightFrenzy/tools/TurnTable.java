@@ -79,8 +79,11 @@ public class TurnTable extends LinearOpMode {
     public void turnTo0() {
         double position = turnMotor.getCurrentPosition();
         if (!(position < 3 && position > -3)) {
-            arm.moveToMinLevel(Arm.ArmLevel.MOVE);
-            turnToPos(0, 1);
+            Direction direction = Direction.COUNTER_CLOCKWISE;
+            if( position < 0) {
+                direction = Direction.CLOCKWISE;
+            }
+            turnTo(direction, 0, true);
         }
     }
 
@@ -125,7 +128,7 @@ public class TurnTable extends LinearOpMode {
         opMode.telemetry.addData("TurnTable Ticks ", ticks);
         opMode.telemetry.update();
 
-        if (direction == Direction.CLOCKWISE) {
+        if (direction == Direction.COUNTER_CLOCKWISE) {
             ticks = -ticks;
         }
 
@@ -134,7 +137,7 @@ public class TurnTable extends LinearOpMode {
 
     public void turnInc(Direction direction){
         int sign =1;
-        if (direction == Direction.CLOCKWISE) {
+        if (direction == Direction.COUNTER_CLOCKWISE) {
             sign = -sign;
         }
         int pos = turnMotor.getCurrentPosition() + (INC*sign);
@@ -166,7 +169,9 @@ public class TurnTable extends LinearOpMode {
         waitForStart();
 
         turnTo(Direction.CLOCKWISE, 90);
+        turnTo0();
         AZUtil.print(telemetry, "Turn Table Position 100", turnMotor.getCurrentPosition());
+        turnTo(Direction.COUNTER_CLOCKWISE, 150);
         turnTo0();
         AZUtil.print(telemetry, "Turn Table Position 0", turnMotor.getCurrentPosition());
         sleep(5000);

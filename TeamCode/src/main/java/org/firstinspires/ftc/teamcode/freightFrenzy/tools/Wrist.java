@@ -18,12 +18,18 @@ public class Wrist extends LinearOpMode {
     Servo wrist;
     LinearOpMode opMode;
 
-    private static final double INTAKE_POS = 0.85;
+    private static final double INTAKE_POS = 0.9;
     private static final double LEVEL_1_DROP_POS = 0.7;
     private static final double LEVEL_2_DROP_POS = 0.7;
-    private static final double LEVEL_3_DROP_POS = 0.43;
-    private static final double HOME_POS = 1;
-    private static final double SECURED_POS = 0.7;
+    private static final double LEVEL_3_DROP_POS = 0.7;
+    private static final double SHARE_HUB_POS = 0.9;
+    private static final double HOME_POS = .9;
+    private static final double SECURED_POS = 0.4;
+    private static final double MOVE_POS = 0.5;
+
+    public void setMoveLevel() {
+        wrist.setPosition(MOVE_POS);
+    }
 
     public enum WristPos{
         HOME (1.0),
@@ -69,6 +75,10 @@ public class Wrist extends LinearOpMode {
         wrist.setPosition(LEVEL_1_DROP_POS);
     }
 
+    public void setShareHubPoss() {
+        wrist.setPosition(SHARE_HUB_POS);
+    }
+
     public void setLevel2DropPos() {
         wrist.setPosition(LEVEL_2_DROP_POS);
     }
@@ -102,6 +112,9 @@ public class Wrist extends LinearOpMode {
         setLevel3DropPos();
         printState("Level 3");
         sleep(4000);
+        setSecuredPos();
+        sleep(4000);
+
         homePos();
         printState("Home Pos");
 

@@ -45,7 +45,7 @@ public abstract class RedAutoBase extends LinearOpMode {
     }
 
     public void detection() {
-        pos = cam.getPos();
+        pos = Arm.ArmLevel.LEVEL2;
         telemetry.addData("Position", pos);
         telemetry.update();
     }
