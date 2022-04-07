@@ -33,11 +33,12 @@ public class AZUtil {
 
     public static void waitUntilMotorAtPos(LinearOpMode opMode, DcMotor motor, int pos) {
         int tolerance = 3;
+        long currentTimeMs = System.currentTimeMillis();
         while (opMode.opModeIsActive() && motor.isBusy()
-//                &&
-//                !(motor.getCurrentPosition() > (pos-3) &&
-//                motor.getCurrentPosition() < (pos+3))
-        ) {
+                &&
+                !(motor.getCurrentPosition() > (pos-3) && motor.getCurrentPosition() < (pos+3))
+                && ((System.currentTimeMillis() - currentTimeMs) < 3000))
+        {
             opMode.sleep(100);
         }
     }
@@ -62,9 +63,14 @@ public class AZUtil {
 
     // todo: write your code here
 
+    static Thread thread = null;
     public static void runInParallel(Runnable r) {
-        // pool.submit(r );
-        new Thread(r).start();
+//        while (thread != null ){
+//            thread.join();
+//            // pool.submit(r );
+//        }
+        thread = new Thread(()->{r.run(); return;});
+        thread.start();
     }
 
     //runs in specified pool. will create pool if does not exist. Recommended that
@@ -75,7 +81,7 @@ public class AZUtil {
 
     //runs in default pool
     public static void runInParallelPool(Runnable r) {
-        pool.execute(r);
+        pool.execute(()->{r.run(); return;});
     }
 
     public static void print(Telemetry telemetry, List<Pair<String, Object>> list) {

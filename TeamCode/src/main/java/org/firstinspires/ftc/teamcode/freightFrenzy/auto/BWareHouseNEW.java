@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(name="1BlueTestAuto")
-public class BlueTestAuto extends LinearOpMode {
+@Autonomous(name="1BlueWareHouseAuto")
+public class BWareHouseNEW extends LinearOpMode {
     Trajectory sharedHubDrop;
     private LinearOpMode opMode;
     private SampleMecanumDrive drive;
@@ -25,69 +25,77 @@ public class BlueTestAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         setup();
+        int pos = cam.getPos();
+        sleep(4000);
+        telemetry.addLine("Status: Initialized");
+        telemetry.update();
         waitForStart();
+        if (isStopRequested()) return;
         blueAutoNew();
     }
 
     private void blueAutoNew(){
+
         Pose2d orgPose = new Pose2d(0, 0, Math.toRadians(180));
         Pose2d startPose = orgPose;
         drive.setPoseEstimate(startPose);
         waitForStart();
+        final AutoUtil.AutoVars vars = getAutoVars(cam.getPos());
 
-        AutoUtil.AutoVars var = AutoUtil.AutoVars.BLUE_LEVEL3;
         for(int i=0; i<3; i++) {
             if(i!=0){
                 AZUtil.runInParallel(() -> {
-                    freightTool.setBlueAllianceHubDropAuto1(AutoUtil.AutoVars.BLUE2_LEVEL3);
+                    freightTool.setBlueAllianceHubDropAuto1(AutoUtil.AutoVars.BW2_LEVEL3);
                 });
             } else {
                 AZUtil.runInParallel(() -> {
-                    freightTool.setBlueAllianceHubDropAuto1(AutoUtil.AutoVars.BLUE_LEVEL3);
+                    freightTool.setBlueAllianceHubDropAuto1(vars);
                 });
             }
 
             //drive to hub and drop
             TrajectorySequence toHub = drive.trajectorySequenceBuilder(startPose)
-                    .lineToLinearHeading(new Pose2d(var.initX,
-                            var.initY, startPose.getHeading()))
+                    .lineToLinearHeading(new Pose2d(vars.initX,
+                            vars.initY, startPose.getHeading()))
                     .build();
             drive.followTrajectorySequence(toHub);
             drive.waitForIdle();
-            freightTool.waitUntilMotorBusy();
+            freightTool.waitUntilBusy();
             //drop cube
-//            sleep(100);
+            sleep(100);
             freightTool.dropFreightTeleOp();
-            sleep(1000);
+            sleep(1500);
 
-             int angle = 0;
-            if( i== 1) angle = 10;
-            else if (i==2) angle = -10;
+
+            //last angle should be zero for teleop
+            int angle = 0;
+            if( i== 0) angle = 10;
+            else if (i==1) angle = -10;
             final int intakeAngle = angle;
             AZUtil.runInParallel(() -> {
-                sleep(800);
-                freightTool.intake();
-                freightTool.setTurnTablePos(intakeAngle);
+                freightTool.intakeWithAngle(intakeAngle);
             });
 
             //to warehouse
             TrajectorySequence toWarehouse = drive.trajectorySequenceBuilder(toHub.end())
-                    .lineToSplineHeading(new Pose2d(0, -1, Math.toRadians(0)))
-                    .forward(23)
+                    .lineToSplineHeading(new Pose2d(0, -2, Math.toRadians(0)))
+                    .forward(26+(i*2))
                     .build();
             drive.followTrajectorySequence(toWarehouse);
-
+            freightTool.waitUntilBusy();
             //autoIntake
 
             autoIntake();
 
-            TrajectorySequence toHome = drive.trajectorySequenceBuilder(toWarehouse.end())
-                    .lineToSplineHeading(new Pose2d(startPose.getX(),
-                            startPose.getY()-1,
-                            Math.toRadians(0)))
-                    .build();
-            drive.followTrajectorySequence(toHome);
-            startPose = toHome.end();
+            if( i!= 2) {
+                TrajectorySequence toHome = drive.trajectorySequenceBuilder(toWarehouse.end())
+                        .lineToSplineHeading(new Pose2d(startPose.getX(),
+                                startPose.getY() - 1,
+                                Math.toRadians(0)))
+                        .build();
+                drive.followTrajectorySequence(toHome);
+                startPose = toHome.end();
+            }
         }
     }
 
@@ -101,11 +109,11 @@ public class BlueTestAuto extends LinearOpMode {
 
         private AutoUtil.AutoVars getAutoVars(int pos) {
             if( pos == 1){
-                return AutoUtil.AutoVars.LEVEL1;
+                return AutoUtil.AutoVars.BW_LEVEL1;
             } else if (pos == 2){
-                return AutoUtil.AutoVars.LEVEL2;
+                return AutoUtil.AutoVars.BW_LEVEL2;
             } else {
-                return AutoUtil.AutoVars.BLUE_LEVEL3;
+                return AutoUtil.AutoVars.BW_LEVEL3;
             }
         }
 
@@ -122,7 +130,7 @@ public class BlueTestAuto extends LinearOpMode {
             double xPos = pos.getX();
             int count = 0;
 
-            while (!freightTool.isFreightDetected() && opModeIsActive() && count < 3 ) {
+            while (!freightTool.isFreightDetected() && opModeIsActive() && count < 2 ) {
                 //sleep(1000);
                 double distance1 = 3.0;
 

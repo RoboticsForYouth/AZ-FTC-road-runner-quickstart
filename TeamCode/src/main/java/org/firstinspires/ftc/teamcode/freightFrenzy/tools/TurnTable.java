@@ -103,7 +103,7 @@ public class TurnTable extends LinearOpMode {
         }
     }
 
-    public void turnToPos(int pos, double power, boolean armLevelCheck) {
+    public synchronized void turnToPos(int pos, double power, boolean armLevelCheck) {
         if(armLevelCheck) {
             arm.moveToMinLevel(Arm.ArmLevel.MOVE);
         }
@@ -118,6 +118,23 @@ public class TurnTable extends LinearOpMode {
 
     public void turnTo(Direction direction, int deg) {
       turnTo(direction, deg, true);
+    }
+    public void setup0() {
+        turnMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        AZUtil.setMotorTargetPostion(turnMotor, 0, 0.2);
+    }
+    public void moveLeftManual() {
+        turnMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        turnMotor.setPower(-0.2);
+        opMode.sleep(1000);
+        turnMotor.setPower(0);
+    }
+
+    public void moveRightManual() {
+        turnMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        turnMotor.setPower(0.2);
+        opMode.sleep(1000);
+        turnMotor.setPower(0);
     }
 
     void turnTo(Direction direction, int deg, boolean armLevelCheck) {

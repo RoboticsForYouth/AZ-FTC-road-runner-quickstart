@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.auto.AutoUtil;
+import org.firstinspires.ftc.teamcode.freightFrenzy.auto.RWareHouseNEW;
 
 @Autonomous(name = "FreightToolAuto")
 public class FreightTool extends LinearOpMode {
@@ -28,16 +29,24 @@ public class FreightTool extends LinearOpMode {
     private boolean frieghtDetected;
     private double sensorDistance;
 
+    public boolean isFreightToolBusy() {
+        return isFreightToolBusy;
+    }
+
     //Moves freightTool to allianceHub pos
     public void allianceHub() {
+        isFreightToolBusy = true;
         intake.stopIntake();
         setAllianceHubDrop();
+        isFreightToolBusy = false;
     }
 
     //moves freightTool to sharedHub pos
     public void sharedHub() {
+        isFreightToolBusy = true;
         intake.stopIntake();
         arm.moveToLevel(Arm.ArmLevel.LEVEL1);
+        isFreightToolBusy = false;
     }
 
     public void dropFreight() {
@@ -66,7 +75,7 @@ public class FreightTool extends LinearOpMode {
         arm.moveDown();
     }
 
-    public void dropFreightTeleOp() {
+    public synchronized void dropFreightTeleOp() {
         intake.dropInstant();
     }
 
@@ -82,10 +91,13 @@ public class FreightTool extends LinearOpMode {
         intakeSensor.stopDetection();
     }
 
-    public void turn180ToSharedHub() {
-        arm.moveToMinLevel(Arm.ArmLevel.SHARED_HUB);
+    public synchronized void turn180ToSharedHub() {
+        isFreightToolBusy = true;
+        intake.stopIntake();
+        arm.moveToLevel(Arm.ArmLevel.SHARED_HUB);
         wrist.setShareHubPoss();
         turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, 180, false);
+        isFreightToolBusy = false;
     }
 
 
@@ -105,7 +117,7 @@ public class FreightTool extends LinearOpMode {
     }
 
     public void setupPos() {
-        wrist.setupPos();
+       // wrist.setupPos();
         turnTable.setupPos();
     }
 
@@ -118,7 +130,7 @@ public class FreightTool extends LinearOpMode {
         setup();
     }
 
-    public void prepForDrop(Arm.ArmLevel level) {
+    public synchronized void prepForDrop(Arm.ArmLevel level) {
         intake.stopIntake();
         arm.moveToMinLevel(level);
         // wrist.setSecuredPos();
@@ -147,19 +159,36 @@ public class FreightTool extends LinearOpMode {
         intakeWithAngle(deg);
     }
 
-    public void intakeWithAngle(int deg) {
+    synchronized public void intakeWithAngle(int deg) {
+        isFreightToolBusy = true;
         turnTable.turnTo(TurnTable.Direction.CLOCKWISE, deg, false);
         waitUntilMotorBusy();
-        arm.moveToLevel(Arm.ArmLevel.INTAKE);
+        sleep(900);
         intake.intake();
         wrist.intakePos();
+        arm.moveToLevel(Arm.ArmLevel.INTAKE);
+        isFreightToolBusy = false;
+    }
+    synchronized public void intakeTeleOp() {
+        isFreightToolBusy = true;
+        turnTable.turnTo(TurnTable.Direction.CLOCKWISE, 0, true);
+//        waitUntilMotorBusy();
+        intake.intake();
+        wrist.intakePos();
+        arm.moveToLevel(Arm.ArmLevel.INTAKE);
+        isFreightToolBusy = false;
     }
 
-    public void move() {
+    synchronized public void move() {
+        isFreightToolBusy = true;
         intake.stopIntake();
         turnTable.turnTo0();
         wrist.setMoveLevel();
         arm.moveToLevel(Arm.ArmLevel.MOVE);
+        isFreightToolBusy = false;
+    }
+    public void setWristSecured() {
+        wrist.setSecuredPos();
     }
 
     public void drop() {
@@ -168,15 +197,15 @@ public class FreightTool extends LinearOpMode {
     }
 
     public void reset() {
-        turnTable.turnToPos(0, 0.1);
+        turnTable.turnTo(TurnTable.Direction.CLOCKWISE, 0, true);
         intake.stopIntake();
         wrist.homePos();
         sleep(1000);
-        arm.moveToMinLevel(Arm.ArmLevel.HOME);
+        arm.moveToLevel(Arm.ArmLevel.HOME);
     }
 
 
-    public synchronized void prepSharedHubDrop() {
+    public synchronized void prepRedSharedHubDrop() {
         isFreightToolBusy = true;
         setShareHubDropPos();
         turnTable.turnTo(TurnTable.Direction.CLOCKWISE, 120, false);
@@ -185,13 +214,22 @@ public class FreightTool extends LinearOpMode {
         isFreightToolBusy = false;
     }
 
-    public void setShareHubDropPos() {
-        intake.stopIntake();
-        wrist.setLevel1DropPos();
-        arm.moveToMinLevel(Arm.ArmLevel.SHARED_HUB);
+    public synchronized void prepBlueSharedHubDrop() {
+        isFreightToolBusy = true;
+        setShareHubDropPos();
+        turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, 120, false);
+        //waitUntilMotorBusy();
+
+        isFreightToolBusy = false;
     }
 
-    public void setLevel2HubDropPos() {
+    public synchronized void setShareHubDropPos() {
+        intake.stopIntake();
+        wrist.setLevel1DropPos();
+        arm.moveToLevel(Arm.ArmLevel.SHARED_HUB);
+    }
+
+    public synchronized void setLevel2HubDropPos() {
         intake.stopIntake();
         wrist.setLevel2DropPos();
         arm.moveToMinLevel(Arm.ArmLevel.LEVEL2);
@@ -206,37 +244,45 @@ public class FreightTool extends LinearOpMode {
         isFreightToolBusy = false;
     }
 
-    public void setAllianceHubDrop() {
+    public synchronized void setAllianceHubDrop() {
         wrist.setLevel3DropPos();
         //intake.stopIntake();
         arm.moveToLevel(Arm.ArmLevel.LEVEL3);
     }
 
-    public void setAllianceHubDropAuto(int level, int turnTableAngle, Arm.ArmLevel armLevel) {
+    public synchronized void setAllianceHubDropAuto(AutoUtil.AutoVars vars) {
+        isFreightToolBusy = true;
         wrist.setLevel1DropPos();
-        arm.moveToLevel(armLevel);
-//        if(level == 1) {
-//            wrist.setLevel1DropPos();
-//            arm.moveToLevel(Arm.ArmLevel.LEVEL1);
-//        } else if (level == 2) {
-//            wrist.setLevel2DropPos();
-//            arm.moveToLevel(Arm.ArmLevel.LEVEL2);
-//        } else {
-//            wrist.setLevel3DropPos();
-//            arm.moveToLevel(Arm.ArmLevel.LEVEL3);
-//        }
-        //intake.stopIntake();
-        sleep(1000);
-        turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, turnTableAngle, false);
+        arm.moveToLevel(vars.getLevel());
+        sleep(500);
+        turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, vars.getTurnTableAngle(), false);
+        waitUntilMotorBusy();
+        isFreightToolBusy = false;
+
+    }
+    public void wristLevel1Pos() {
+        wrist.setLevel1DropPos();
     }
 
-    public void setBlueAllianceHubDropAuto1(AutoUtil.AutoVars vars) {
+    public synchronized void setDuckHupDropAuto() {
+        isFreightToolBusy = true;
+        wrist.setSecuredPos();
+        arm.moveToLevel(AutoUtil.AutoVars.RC_LEVEL3.getLevel());
+        sleep(500);
+        turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, AutoUtil.AutoVars.RC_LEVEL3.getTurnTableAngle(), false);
+        waitUntilMotorBusy();
+        isFreightToolBusy = false;
+    }
+
+
+    public synchronized void setBlueAllianceHubDropAuto1(AutoUtil.AutoVars vars) {
+        isFreightToolBusy = true;
         arm.moveToLevel(vars.getLevel());
+        sleep(500);
         wrist.setLevel1DropPos();
-        waitUntilMotorBusy();
-        waitUntilMotorBusy();
-//        sleep(1000);
         turnTable.turnTo(vars.getDirection(), vars.getTurnTableAngle(), false);
+        waitUntilMotorBusy();
+        isFreightToolBusy = false;
     }
 
     public synchronized void moveTo0() {
@@ -252,17 +298,17 @@ public class FreightTool extends LinearOpMode {
         turnTable.turnTo0();
     }
 
-    public void setTurnTablePos(int deg) {
+    public synchronized void setTurnTablePos(int deg) {
         turnTable.turnTo(TurnTable.Direction.CLOCKWISE, deg, false);
     }
 
-    public void waitUntilMotorBusy() {
+    public synchronized void waitUntilMotorBusy() {
         while ((arm.isBusy() || turnTable.isBusy()) && opModeIsActive()) {
             sleep(100);
         }
     }
 
-    public void waitUntilBusy() {
+    public synchronized void waitUntilBusy() {
         while (isFreightToolBusy) {
             sleep(100);
         }
@@ -338,7 +384,7 @@ public class FreightTool extends LinearOpMode {
                 .build();
         AZUtil.runInParallelPool(
                 () -> {
-                    prepSharedHubDrop();
+                    prepRedSharedHubDrop();
 
                 }
         );
@@ -408,11 +454,32 @@ public class FreightTool extends LinearOpMode {
     public void runOpMode() {
         setup();
         drive = new SampleMecanumDrive(opMode.hardwareMap);
-
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        MultipleTelemetry telemetry;
+        telemetry = new MultipleTelemetry(opMode.telemetry, dashboard.getTelemetry());
 
         waitForStart();
-        testAutoIntakeAndDropSharedHub();
-        sleep(5000);
+        for (int i = 0; i < 5; i++) {
+            if (!opModeIsActive()) {
+                break;
+            }
+            //AZUtil.runInParallelPool(()->{setAllianceHubDropAuto(1, 150, Arm.ArmLevel.LEVEL3);});
+            telemetry.addData("Status", "Waiting for Alliance Hub");
+            telemetry.update();
+            waitUntilBusy();
+            telemetry.addData("Status", "Dropping Freight");
+            telemetry.update();
+
+            dropFreight();
+            sleep(1500);
+            telemetry.addData("Status", "Waiting for Intake");
+            telemetry.update();
+            AZUtil.runInParallelPool(   ()->{intake();});
+            waitUntilBusy();
+            telemetry.addData("Status", "Intake Complete");
+            telemetry.update();
+            sleep(1000);
+        }
 
         //testHome();
         sleep(10000);
@@ -442,6 +509,31 @@ public class FreightTool extends LinearOpMode {
         sleep(2000);
     }
 
+    public void setup0() {
+        arm.setupPos();
+        turnTable.setup0();
+    }
+
+    public void moveUp(){
+        arm.moveUpManual();
+        setup0();
+    }
+
+    public void moveDown(){
+        arm.moveDownManual();
+        setup0();
+    }
+
+    public void moveLeft(){
+        turnTable.moveLeftManual();
+        setup0();
+    }
+
+    public void moveRight(){
+        turnTable.moveRightManual();
+        setup0();
+    }
+
     public void turnInc(TurnTable.Direction direction) {
         turnTable.turnInc(direction);
     }
@@ -451,7 +543,7 @@ public class FreightTool extends LinearOpMode {
     }
 
     private void testLevel1Drop() {
-        prepSharedHubDrop();
+        prepRedSharedHubDrop();
     }
 
     private void testHome() {

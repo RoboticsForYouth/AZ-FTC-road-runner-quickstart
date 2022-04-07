@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -17,14 +20,9 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.TurnTable;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import java.util.Arrays;
 
 
-@TeleOp
 public class FFTeleOpStates extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -39,15 +37,14 @@ public class FFTeleOpStates extends LinearOpMode {
     private boolean isDuckyToolStopped;
     private boolean isIntakeOn;
     private boolean warehouseToHub = false;
-    private SampleMecanumDrive drive;
-    private TrajectorySequence allianceToWarehouseTrajectorySequence;
-    private boolean isSharedHubAubAuto = false;
-    private boolean sharedHubComplete;
+    SampleMecanumDrive drive;
+    TrajectorySequence allianceToWarehouseTrajectorySequence;
+    boolean isSharedHubAubAuto = false;
+    boolean sharedHubComplete;
 
     private enum GamePad2Mode {
         NONE, TAPE_DRIVE, RESET_ARM, RESET_INTAKE
     }
-
 
     GamePad2Mode gamepad2Mode = GamePad2Mode.NONE;
 
@@ -90,15 +87,7 @@ public class FFTeleOpStates extends LinearOpMode {
                     )
             );
 
-
             drive.update();
-
-//            Pose2d poseEstimate = drive.getPoseEstimate();
-//            telemetry.addData("x", poseEstimate.getX());
-//            telemetry.addData("y", poseEstimate.getY());
-//            telemetry.addData("heading", poseEstimate.getHeading());
-//            telemetry.update();
-
 
             orgLoop();
             Pose2d myPose = drive.getPoseEstimate();
@@ -113,28 +102,17 @@ public class FFTeleOpStates extends LinearOpMode {
     }
 
     private void orgLoop() {
-        if (gamepad1.right_bumper) {
-//            intakeSensor.startDetection();
+        if (gamepad1.right_bumper && !freightTool.isFreightToolBusy()) {
             AZUtil.runInParallel(() -> {
-                freightTool.intake();
+                freightTool.intakeTeleOp();
             });
-//            while(intakeSensor.isFreightDetected())
-//                freightTool.stopIntake();
-//            intakeSensor.stopDetection();
         }
-        if (gamepad1.left_bumper) {
-            if (!isSharedHubAubAuto) {
-                isSharedHubAubAuto = true;
-                autoSharedHubDrop();
-            } else {
-                autoSharedHubToWarehouse();
-                isSharedHubAubAuto = false;
-            }
+        if (gamepad1.left_bumper && !freightTool.isFreightToolBusy()) {
+            autoSharedHubDrop();
         }
-        if (gamepad1.a) { //drop freight
+        if (gamepad1.a && !intakeOn) { //drop freight
             freightTool.dropFreightTeleOp();
             isIntakeOn = true;
-//            AZUtil.runInParallel( ()->{freightTool.dropFreight();});
         } else if (isIntakeOn) {
             freightTool.stopIntake();
             isIntakeOn = false;
@@ -156,13 +134,13 @@ public class FFTeleOpStates extends LinearOpMode {
             }
         }
 
-        if (gamepad1.dpad_up) { //move to alliance hub pos
+        if (gamepad1.dpad_up && !freightTool.isFreightToolBusy()) { //move to alliance hub pos
             AZUtil.runInParallel(() -> {
                 freightTool.allianceHub();
             });
         }
 
-        if (gamepad1.dpad_down) { //move to shared hub pos
+        if (gamepad1.dpad_down && !freightTool.isFreightToolBusy()) { //move to shared hub pos
             AZUtil.runInParallel(() -> {
                 freightTool.sharedHub();
             });
@@ -175,13 +153,8 @@ public class FFTeleOpStates extends LinearOpMode {
             freightTool.turnInc(TurnTable.Direction.CLOCKWISE);
         }
 
-        if (gamepad1.left_stick_button) {
+        if (gamepad1.left_stick_button && !freightTool.isFreightToolBusy()) {
             autoSharedHubOverBarrierAuto();
-
-//            if (!isSharedHubAubAuto) {
-//            } else {
-//                autoWarehouseOverBarrierAuto();
-//            }
         }
 
         if (gamepad1.right_trigger > 0.1) {
@@ -197,66 +170,41 @@ public class FFTeleOpStates extends LinearOpMode {
                 isDuckyToolStopped = true;
             }
         }
+
+        if(gamepad2.dpad_up){
+            freightTool.moveUp();
+        }
+        if(gamepad2.dpad_down){
+            freightTool.moveDown();
+        }
+
+        if(gamepad2.dpad_left){
+            freightTool.moveLeft();
+        }
+        if(gamepad2.dpad_right){
+            freightTool.moveRight();
+        }
     }
 
-    private void autoWarehouseOverBarrierAuto() {
-        AZUtil.runInParallel(() -> {
-            freightTool.intake();
-        });
-    }
-
-    private void autoSharedHubOverBarrierAuto() {
+    void autoSharedHubOverBarrierAuto() {
         //Set initial to zero
-//        Pose2d pose2d = new Pose2d();
-//        drive.setPoseEstimate(pose2d);
-//        Trajectory trajectory = drive.trajectoryBuilder(pose2d, true)
-//                .back(20)
-//                .build();
         if (!isSharedHubAubAuto)
             isSharedHubAubAuto = true;
-            AZUtil.runInParallel(() -> {
+        AZUtil.runInParallel(() -> {
             freightTool.turn180ToSharedHub();
             sharedHubComplete = true;
         });
-//        drive.followTrajectory(trajectory);
     }
 
 
-    private void autoSharedHubToWarehouse() {
-        //forward up 24 inches
-        //in parallel move turntable to 120 degrees clockwise
-        drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
-        Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(30)
-                .addTemporalMarker(0, () -> {
-                    AZUtil.runInParallel(() -> {
-                        freightTool.turnTo0();
+     void autoSharedHubDrop() {
 
-                    });
-                })
-                .addTemporalMarker(2, () -> {
-                    AZUtil.runInParallel(() -> {
-                        freightTool.intake();
-                    });
-                })
-                .build();
-        drive.followTrajectory(trajectory);
+        AZUtil.runInParallel(() -> {
+            freightTool.prepRedSharedHubDrop();
+        });
     }
 
-    private void autoSharedHubDrop() {
-        //back up 24 inches
-        //in parallel move turntable to 120 degrees clockwise
-        drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
-        Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .back(22)
-                .addTemporalMarker(0, () -> {
-                    freightTool.prepSharedHubDrop();
-                })
-                .build();
-        drive.followTrajectory(trajectory);
-    }
-
-    private void moveToAllianceHub() {
+     void moveToAllianceHub() {
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
         drive.setPoseEstimate(new Pose2d(0, 10, Math.toRadians(0)));
         AZUtil.runInParallel(() -> {
@@ -269,7 +217,7 @@ public class FFTeleOpStates extends LinearOpMode {
     }
 
     @NonNull
-    private Trajectory getMoveToAllianceHubTrajectory(Pose2d poseEstimate) {
+    Trajectory getMoveToAllianceHubTrajectory(Pose2d poseEstimate) {
         Trajectory trajectory = drive.trajectoryBuilder(poseEstimate, true)
                 .splineToSplineHeading(new Pose2d(poseEstimate.getX() - 30, poseEstimate.getY() + 21,
                                 Math.toRadians(poseEstimate.getHeading() + 90)), Math.toRadians(30),
@@ -279,22 +227,25 @@ public class FFTeleOpStates extends LinearOpMode {
         return trajectory;
     }
 
-    private void moveToWarehouse() {
+     void moveToWarehouse() {
         // Set your initial pose to x: 10, y: 10, facing 90 degrees
         Pose2d poseEstimate = drive.getPoseEstimate();
         allianceToWarehouseTrajectorySequence = getAllianceToWarehouseTrajectorySequence(poseEstimate);
         drive.followTrajectorySequence(allianceToWarehouseTrajectorySequence);
-//        AZUtil.runInParallel(()->{freightTool.intake();});
+        AZUtil.runInParallel(() -> {
+            freightTool.intake();
+        });
     }
 
-    private TrajectorySequence getAllianceToWarehouseTrajectorySequence(Pose2d poseEstimate) {
+     TrajectorySequence getAllianceToWarehouseTrajectorySequence(Pose2d poseEstimate) {
         TrajectorySequence trajectory = drive.trajectorySequenceBuilder(poseEstimate)
                 .lineToSplineHeading(new Pose2d(0, 0,
                                 Math.toRadians(0)),
                         SampleMecanumDrive.getVelocityConstraint(70, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(40))
-                .forward(24)
-                .addTemporalMarker(2, () -> {
+                .lineToSplineHeading(new Pose2d(24,0, Math.toRadians(0)))
+//                .forward(24)
+                .addTemporalMarker(1, () -> {
                     AZUtil.runInParallel(() -> {
                         freightTool.intake();
                     });
@@ -302,48 +253,5 @@ public class FFTeleOpStates extends LinearOpMode {
                 .build();
         return trajectory;
     }
-
-    private enum State {
-        INIT, DRIVE_ONLY, INTAKE, CAROUSEL, CAP, DELIVERY_SHARED_HUB, DELIVERY_LEVEL_1, DELIVERY_LEVEL_2,
-        DELIVERY_LEVEL_3
-    }
-
-    State currentState = State.INIT;
-
-
-    FFCommandExecutor dropFreihtCmd = new FFCommandExecutor() {
-        @Override
-        void execute() {
-            freightTool.dropFreight();
-        }
-    };
-    FFCommandExecutor sharedHubCmd = new FFCommandExecutor() {
-        @Override
-        void execute() {
-            freightTool.sharedHub();
-        }
-    };
-
-    FFCommandExecutor allianceHubCmd = new FFCommandExecutor() {
-        @Override
-        void execute() {
-            freightTool.allianceHub();
-        }
-    };
-
-    FFCommandExecutor intakeCmd = new FFCommandExecutor() {
-        @Override
-        void execute() {
-            freightTool.intake();
-        }
-    };
-
-    FFCommandExecutor moveCmd = new FFCommandExecutor() {
-        @Override
-        void execute() {
-            freightTool.move();
-        }
-    };
-
 
 }

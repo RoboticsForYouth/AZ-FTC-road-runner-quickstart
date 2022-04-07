@@ -17,9 +17,9 @@ public class Arm extends LinearOpMode {
     public enum ArmLevel {
         ZERO(0), //0
         HOME(0), //-80
-        LEVEL1(550), //720
+        LEVEL1(300), //720
         SHARED_HUB(450), //720
-        LEVEL2(900), //690
+        LEVEL2(725), //690
         LEVEL3(1300), //1600
 
         MOVE(400), //700
@@ -52,6 +52,28 @@ public class Arm extends LinearOpMode {
         moveToLevel(ArmLevel.ZERO);
     }
 
+    public void setup0(){
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        AZUtil.setMotorTargetPostion(armMotor, 0, 0.4);
+    }
+
+    public void moveUpManual(){
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        armMotor.setPower(0.5);
+        opMode.sleep(1000);
+        stopArm();
+    }
+    public void stopArm(){
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        armMotor.setPower(0);
+    }
+
+    public void moveDownManual() {
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        armMotor.setPower(-0.5);
+        opMode.sleep(1000);
+        stopArm();
+    }
     public Arm(LinearOpMode opMode) {
         this.opMode = opMode;
         setup();
@@ -62,12 +84,12 @@ public class Arm extends LinearOpMode {
         super();
     }
 
-    public void moveTo0() {
+    public synchronized void moveTo0() {
         AZUtil.setMotorTargetPostion(armMotor, ArmLevel.ZERO.getValue(), 0.4);
         AZUtil.waitUntilMotorAtPos(opMode, armMotor, ArmLevel.ZERO.getValue());
     }
 
-    public void moveToLevel(ArmLevel armLevel) {
+    public synchronized void moveToLevel(ArmLevel armLevel) {
         if( !AZUtil.isMotorAtPosition(armMotor, armLevel.getValue())) {
             AZUtil.setMotorTargetPostion(armMotor, armLevel.getValue(), 0.6);
             AZUtil.waitUntilMotorAtPos(opMode, armMotor, armLevel.getValue());

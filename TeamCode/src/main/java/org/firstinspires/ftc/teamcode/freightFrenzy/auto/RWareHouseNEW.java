@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name = "1RedWareHouseAuto")
-public class RWareHouseAuto extends LinearOpMode {
+public class RWareHouseNEW extends LinearOpMode {
     Trajectory sharedHubDrop;
     private LinearOpMode opMode;
     private FreightTool freightTool;
@@ -36,8 +36,12 @@ public class RWareHouseAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.setPoseEstimate(startPose);
 
-
-//         testPath();
+        int pos = cam.getPos();
+        sleep(4000);
+        telemetry.addData("Status: Initialized", pos);
+        telemetry.update();
+        waitForStart();
+        if (isStopRequested()) return;
 
         redAuto(startPose);
         //loop to start collection
@@ -54,52 +58,61 @@ public class RWareHouseAuto extends LinearOpMode {
 
     private void redAuto(Pose2d startPose) {
 
-        int pos = cam.getPos();
-        telemetry.addData("Pos, wait 4 seconds", pos);
-        telemetry.update();
-        waitForStart();
-
-        final AutoVars vars = getAutoVars(cam.getPos());
+        final AutoUtil.AutoVars vars = getAutoVars(cam.getPos());
         telemetry.addData("Vars", vars);
         telemetry.update();
         TrajectorySequence toHub0 = getToHubTrajectorySequence(startPose, vars.initX, vars.initY);
 
         for(int i = 0; i < 3; i++) {
             TrajectorySequence toHub = toHub0;
+
+            //second and third cycles drop freight at level 3
             if(i != 0) {
                 AZUtil.runInParallel(() -> {
-                    freightTool.setAllianceHubDropAuto(AutoVars.LEVEL3.tsePos,
-                            AutoVars.LEVEL3.turnTableAngle,
-                            AutoVars.LEVEL3.level);
+                    freightTool.setAllianceHubDropAuto(AutoUtil.AutoVars.RW_LEVEL3);
                 });
-                TrajectorySequence toHub12 = getToHubTrajectorySequence(startPose, AutoVars.LEVEL3.initX, AutoVars.LEVEL3.initY-3);
+                TrajectorySequence toHub12 = getToHubTrajectorySequence(startPose, AutoUtil.AutoVars.RW_LEVEL3.initX, AutoUtil.AutoVars.RW_LEVEL3.initY-3);
                 toHub = toHub12;
             } else {
+                //level based on detection for the first cycle
                 AZUtil.runInParallel(() -> {
-                    freightTool.setAllianceHubDropAuto(vars.tsePos, vars.turnTableAngle, vars.getLevel());
+                    freightTool.setAllianceHubDropAuto(vars);
                 });
             }
-
             drive.followTrajectorySequence(toHub);
+            //wait until trajectory completed
+            drive.waitForIdle();
+
+            //wait until arm moved to drop position
+            freightTool.waitUntilBusy();
+            sleep(100);
             freightTool.dropFreightTeleOp();
             sleep(1500);
+
+            //last angle should be zero so that teleop cn start at correct angle
+            int angle = 0;
+            if( i== 0) angle = 10;
+            else if (i==1) angle = -10;
+            final int intakeAngle = angle;
+
             AZUtil.runInParallel(() -> {
-                sleep(800);
-                freightTool.intake();
+                freightTool.intakeWithAngle(intakeAngle);
+//                freightTool.setTurnTablePos(intakeAngle);
             });
             TrajectorySequence toWarehouse = drive.trajectorySequenceBuilder(toHub.end())
                     .lineToSplineHeading(new Pose2d(0, -2, 0))
-                    .forward(26)
+                    .forward(26+(i*2))
                     .build();
             drive.followTrajectorySequence(toWarehouse);
-            int angle = 0;
-            if( i== 1) angle = 5;
-            else if (i==2) angle = -5;
+            drive.waitForIdle();
+            freightTool.waitUntilBusy();
             autoIntake(angle);
-            Trajectory toHome = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(0, -2, 0))
-                    .build();
-            drive.followTrajectory(toHome);
+            if( i< 2) {
+                Trajectory toHome = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(0, -2, 0))
+                        .build();
+                drive.followTrajectory(toHome);
+            }
         }
     }
 
@@ -110,38 +123,14 @@ public class RWareHouseAuto extends LinearOpMode {
         return toHub;
     }
 
-    private AutoVars getAutoVars(int pos) {
+    private AutoUtil.AutoVars getAutoVars(int pos) {
         if( pos == 1){
-            return AutoVars.LEVEL1;
+            return AutoUtil.AutoVars.RW_LEVEL1;
         } else if (pos == 2){
-            return AutoVars.LEVEL2;
+            return AutoUtil.AutoVars.RW_LEVEL2;
         } else {
-            return AutoVars.LEVEL3;
+            return AutoUtil.AutoVars.RW_LEVEL3;
         }
-    }
-
-    private void autoSharedHubDrop(SampleMecanumDrive drive, FreightTool freightTool) {
-        sharedHubDrop = drive.trajectoryBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(-12, 0, 0)).build();
-
-        Trajectory home = drive.trajectoryBuilder(sharedHubDrop.end()).
-                lineToSplineHeading(new Pose2d(0, 0, Math.toRadians(0))).build();
-        AZUtil.runInParallel(new Runnable() {
-            @Override
-            public void run() {
-                freightTool.prepSharedHubDrop();
-
-            }
-        });
-        drive.followTrajectory(sharedHubDrop);
-        freightTool.waitUntilBusy();
-        AZUtil.runInParallel(new Runnable() {
-            @Override
-            public void run() {
-                freightTool.moveTo0();
-            }
-        });
-        drive.followTrajectory(home);
     }
 
     public void autoIntake(int deg) {
@@ -183,47 +172,8 @@ public class RWareHouseAuto extends LinearOpMode {
         freightTool.stopDetection();
         freightTool.stopIntake();
 
-
     }
 
-    public enum AutoVars{
-        LEVEL1(1, 0, 30, 150, Arm.ArmLevel.LEVEL1),
-        LEVEL2(1, -4, 34, 150, Arm.ArmLevel.LEVEL2),
-        LEVEL3(1, -6, 35, 150, Arm.ArmLevel.LEVEL3);
-        public int turnTableAngle;
-        private Arm.ArmLevel level;
-        public int tsePos;
-        public int initX;
-        public int initY;
 
-        AutoVars(int tsePos, int initX, int initY, int turnTableAngle, Arm.ArmLevel level) {
-
-            this.tsePos = tsePos;
-            this.initX = initX;
-            this.initY = initY;
-            this.turnTableAngle = turnTableAngle;
-            this.level = level;
-        }
-
-        public int getTurnTableAngle() {
-            return turnTableAngle;
-        }
-
-        public int getTsePos() {
-            return tsePos;
-        }
-
-        public int getInitX() {
-            return initX;
-        }
-
-        public Arm.ArmLevel getLevel() {
-            return level;
-        }
-
-        public int getInitY() {
-            return initY;
-        }
-    }
 
 }
