@@ -17,17 +17,14 @@ public class Intake extends LinearOpMode {
         intake = opMode.hardwareMap.get(CRServo.class, "intake");
     }
 
-    public Intake() {
-        opMode = this;
-    }
+    public Intake() { opMode = this; }
 
     public Intake(LinearOpMode opMode) {
         this.opMode = opMode;
         setup();
     }
 
-    public void intake() {
-        intake.setPower(INTAKE_POWER);
+    public void intake() { intake.setPower(INTAKE_POWER);
     }
 
     public void reverseIntake() {

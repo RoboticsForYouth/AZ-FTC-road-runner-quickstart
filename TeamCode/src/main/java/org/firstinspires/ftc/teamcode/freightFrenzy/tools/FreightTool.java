@@ -227,6 +227,7 @@ public class FreightTool extends LinearOpMode {
         intake.stopIntake();
         wrist.setLevel1DropPos();
         arm.moveToLevel(Arm.ArmLevel.SHARED_HUB);
+        sleep(350);
     }
 
     public synchronized void setLevel2HubDropPos() {
@@ -252,7 +253,7 @@ public class FreightTool extends LinearOpMode {
 
     public synchronized void setAllianceHubDropAuto(AutoUtil.AutoVars vars) {
         isFreightToolBusy = true;
-        wrist.setLevel1DropPos();
+        wrist.setAutoLevel1DropPos();
         arm.moveToLevel(vars.getLevel());
         sleep(500);
         turnTable.turnTo(TurnTable.Direction.COUNTER_CLOCKWISE, vars.getTurnTableAngle(), false);

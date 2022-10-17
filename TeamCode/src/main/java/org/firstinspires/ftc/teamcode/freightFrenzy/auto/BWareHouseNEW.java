@@ -78,7 +78,7 @@ public class BWareHouseNEW extends LinearOpMode {
 
             //to warehouse
             TrajectorySequence toWarehouse = drive.trajectorySequenceBuilder(toHub.end())
-                    .lineToSplineHeading(new Pose2d(0, -2, Math.toRadians(0)))
+                    .lineToSplineHeading(new Pose2d(0, 2, Math.toRadians(0)))
                     .forward(26+(i*2))
                     .build();
             drive.followTrajectorySequence(toWarehouse);
@@ -130,7 +130,7 @@ public class BWareHouseNEW extends LinearOpMode {
             double xPos = pos.getX();
             int count = 0;
 
-            while (!freightTool.isFreightDetected() && opModeIsActive() && count < 2 ) {
+            while (!freightTool.isFreightDetected() && opModeIsActive() && count < 1 ) {
                 //sleep(1000);
                 double distance1 = 3.0;
 

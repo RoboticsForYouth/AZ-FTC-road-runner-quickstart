@@ -20,6 +20,7 @@ public class Wrist extends LinearOpMode {
 
     private static final double INTAKE_POS = 0.95;
     private static final double LEVEL_1_DROP_POS = 0.8;
+    private static final double AUTO_LEVEL_1_DROP_POS = 0.7;
     private static final double LEVEL_2_DROP_POS = 0.75;
     private static final double LEVEL_3_DROP_POS = 0.75;
     private static final double SHARE_HUB_POS = 0.95;
@@ -74,6 +75,9 @@ public class Wrist extends LinearOpMode {
 
     public void setLevel1DropPos() {
         wrist.setPosition(LEVEL_1_DROP_POS);
+    }
+    public void setAutoLevel1DropPos() {
+        wrist.setPosition(AUTO_LEVEL_1_DROP_POS);
     }
 
     public void setShareHubPoss() {

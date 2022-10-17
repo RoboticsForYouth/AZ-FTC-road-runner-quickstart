@@ -17,9 +17,9 @@ public class Arm extends LinearOpMode {
     public enum ArmLevel {
         ZERO(0), //0
         HOME(0), //-80
-        LEVEL1(300), //720
-        SHARED_HUB(450), //720
-        LEVEL2(725), //690
+        LEVEL1(450), //720
+        SHARED_HUB(500), //720
+        LEVEL2(800), //690
         LEVEL3(1300), //1600
 
         MOVE(400), //700
@@ -43,7 +43,7 @@ public class Arm extends LinearOpMode {
     public void setup() {
 
         armMotor = opMode.hardwareMap.get(DcMotor.class, "arm");/* code */
-        //set encoder to zero
+        //set encode r to zero
         setupPos();
     }
 

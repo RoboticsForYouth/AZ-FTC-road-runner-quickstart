@@ -100,7 +100,7 @@ public class RWareHouseNEW extends LinearOpMode {
 //                freightTool.setTurnTablePos(intakeAngle);
             });
             TrajectorySequence toWarehouse = drive.trajectorySequenceBuilder(toHub.end())
-                    .lineToSplineHeading(new Pose2d(0, -2, 0))
+                    .lineToSplineHeading(new Pose2d(0, -3, 0))
                     .forward(26+(i*2))
                     .build();
             drive.followTrajectorySequence(toWarehouse);
@@ -109,7 +109,7 @@ public class RWareHouseNEW extends LinearOpMode {
             autoIntake(angle);
             if( i< 2) {
                 Trajectory toHome = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(0, -2, 0))
+                        .lineToLinearHeading(new Pose2d(0, -3, 0))
                         .build();
                 drive.followTrajectory(toHome);
             }

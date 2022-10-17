@@ -76,13 +76,13 @@ public class RCarouselNEW extends LinearOpMode {
         freightTool.waitUntilBusy();
         sleep(100);
         freightTool.dropFreightTeleOp();
-        sleep(1500);
+        sleep(3000);
         AZUtil.runInParallel(() -> {
             freightTool.reset();
         });
         TrajectorySequence toCarousel = drive.trajectorySequenceBuilder(toHub.end())
                 .lineToSplineHeading(new Pose2d(-22, 15, 0))
-                .strafeRight(7)
+                .strafeRight(9)
                 .build();
         drive.followTrajectorySequence(toCarousel);
         drive.waitForIdle();
@@ -121,7 +121,7 @@ public class RCarouselNEW extends LinearOpMode {
 
 
         Trajectory toPark = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-27, 26, 0))
+                .lineToLinearHeading(new Pose2d(-30, 29, 0))
                 .build();
         drive.followTrajectory(toPark);
 

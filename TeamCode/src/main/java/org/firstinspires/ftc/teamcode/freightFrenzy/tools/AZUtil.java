@@ -114,4 +114,8 @@ public class AZUtil {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         return new MultipleTelemetry(opMode.telemetry, dashboard.getTelemetry());
     }
+
+    public static void resetMotor(DcMotor motor){
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }

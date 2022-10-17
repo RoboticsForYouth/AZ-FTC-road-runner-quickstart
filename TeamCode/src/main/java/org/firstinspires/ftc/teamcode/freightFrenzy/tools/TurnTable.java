@@ -106,6 +106,7 @@ public class TurnTable extends LinearOpMode {
     public synchronized void turnToPos(int pos, double power, boolean armLevelCheck) {
         if(armLevelCheck) {
             arm.moveToMinLevel(Arm.ArmLevel.MOVE);
+            sleep(350);
         }
 
         AZUtil.setMotorTargetPostion(turnMotor, pos, power);

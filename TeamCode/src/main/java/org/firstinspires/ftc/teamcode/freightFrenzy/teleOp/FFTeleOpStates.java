@@ -81,9 +81,9 @@ public class FFTeleOpStates extends LinearOpMode {
         while (opModeIsActive()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y * .5,
-                            -gamepad1.left_stick_x * .5,
-                            -gamepad1.right_stick_x * .5
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
                     )
             );
 
