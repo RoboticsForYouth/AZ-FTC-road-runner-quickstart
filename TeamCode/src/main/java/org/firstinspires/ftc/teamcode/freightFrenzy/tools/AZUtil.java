@@ -25,7 +25,7 @@ public class AZUtil {
     private static final HashMap<String, Object> printMap = new HashMap<>();
 
 
-    public static void setMotorTargetPostion(DcMotor motor, int pos, double power) {
+    public static void setMotorTargetPosition(DcMotor motor, int pos, double power) {
         motor.setTargetPosition(pos);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(power);
@@ -115,7 +115,8 @@ public class AZUtil {
         return new MultipleTelemetry(opMode.telemetry, dashboard.getTelemetry());
     }
 
-    public static void resetMotor(DcMotor motor){
+    public static void resetMotor(LinearOpMode linearOpMode, DcMotor motor){
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        waitUntilMotorAtPos(linearOpMode, motor, 0);
     }
 }

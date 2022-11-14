@@ -50,7 +50,7 @@ public class TurnTable extends LinearOpMode {
 
     public void setupPos() {
         turnMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        AZUtil.setMotorTargetPostion(turnMotor, 0, 0.2);
+        AZUtil.setMotorTargetPosition(turnMotor, 0, 0.2);
         arm.setupPos();
     }
 
@@ -94,7 +94,7 @@ public class TurnTable extends LinearOpMode {
     public void turnRamp() {
         double power = 0.2;
         int pos = turnMotor.getCurrentPosition() + 10;
-        AZUtil.setMotorTargetPostion(turnMotor, 350, power);
+        AZUtil.setMotorTargetPosition(turnMotor, 350, power);
         while (!AZUtil.isAtPos(turnMotor, 350)) {
             sleep(500);
             if (power >= 0.25)
@@ -109,7 +109,7 @@ public class TurnTable extends LinearOpMode {
             sleep(350);
         }
 
-        AZUtil.setMotorTargetPostion(turnMotor, pos, power);
+        AZUtil.setMotorTargetPosition(turnMotor, pos, power);
         AZUtil.waitUntilMotorAtPos(opMode, turnMotor, pos);
     }
     public void turnToPos(int pos, double power) {
@@ -122,7 +122,7 @@ public class TurnTable extends LinearOpMode {
     }
     public void setup0() {
         turnMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        AZUtil.setMotorTargetPostion(turnMotor, 0, 0.2);
+        AZUtil.setMotorTargetPosition(turnMotor, 0, 0.2);
     }
     public void moveLeftManual() {
         turnMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);

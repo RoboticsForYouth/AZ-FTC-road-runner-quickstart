@@ -54,7 +54,7 @@ public class Arm extends LinearOpMode {
 
     public void setup0(){
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        AZUtil.setMotorTargetPostion(armMotor, 0, 0.4);
+        AZUtil.setMotorTargetPosition(armMotor, 0, 0.4);
     }
 
     public void moveUpManual(){
@@ -85,13 +85,13 @@ public class Arm extends LinearOpMode {
     }
 
     public synchronized void moveTo0() {
-        AZUtil.setMotorTargetPostion(armMotor, ArmLevel.ZERO.getValue(), 0.4);
+        AZUtil.setMotorTargetPosition(armMotor, ArmLevel.ZERO.getValue(), 0.4);
         AZUtil.waitUntilMotorAtPos(opMode, armMotor, ArmLevel.ZERO.getValue());
     }
 
     public synchronized void moveToLevel(ArmLevel armLevel) {
         if( !AZUtil.isMotorAtPosition(armMotor, armLevel.getValue())) {
-            AZUtil.setMotorTargetPostion(armMotor, armLevel.getValue(), 0.6);
+            AZUtil.setMotorTargetPosition(armMotor, armLevel.getValue(), 0.6);
             AZUtil.waitUntilMotorAtPos(opMode, armMotor, armLevel.getValue());
         }
     }
@@ -112,12 +112,12 @@ public class Arm extends LinearOpMode {
     }
     public void moveUp() {
         int newPos = armMotor.getCurrentPosition() + INC;
-        AZUtil.setMotorTargetPostion(armMotor, newPos, 0.4);
+        AZUtil.setMotorTargetPosition(armMotor, newPos, 0.4);
         AZUtil.waitUntilMotorAtPos(opMode, armMotor, newPos);
     }
     public void moveDown() {
         int newPos = armMotor.getCurrentPosition() - INC;
-        AZUtil.setMotorTargetPostion(armMotor, newPos, 0.4);
+        AZUtil.setMotorTargetPosition(armMotor, newPos, 0.4);
         AZUtil.waitUntilMotorAtPos(opMode, armMotor, newPos);
     }
 
