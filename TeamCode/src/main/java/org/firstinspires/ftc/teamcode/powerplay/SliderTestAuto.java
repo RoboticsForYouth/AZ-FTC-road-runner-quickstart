@@ -22,7 +22,7 @@ public class SliderTestAuto extends LinearOpMode {
         leftSlider = hardwareMap.get(DcMotorEx.class, "leftSlider");
         rightSlider = hardwareMap.get(DcMotorEx.class, "rightSlider");
 
-        leftSlider.setDirection(DcMotor.Direction.REVERSE);
+        rightSlider.setDirection(DcMotor.Direction.REVERSE);
         AZUtil.resetMotor(this, leftSlider);
         AZUtil.resetMotor(this, rightSlider);
 

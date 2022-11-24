@@ -2,33 +2,46 @@ package org.firstinspires.ftc.teamcode.powerplay.tools;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.freightFrenzy.auto.AutoUtil;
-import org.firstinspires.ftc.teamcode.freightFrenzy.auto.RWareHouseNEW;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 
 @Autonomous(name = "LiftAuto")
 public class Lift extends LinearOpMode {
 
+    public static final double UP_POWER = 0.95;
+    public static final double DOWN_POWER = 0.1;
+    public static final int DROP_HEIGHT = 200;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
     LinearOpMode opMode;
     SampleMecanumDrive drive;
+
+    public void lowerWithoutEncoder() {
+        leftSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlider.setPower(-1);
+        rightSlider.setPower(-1);
+    }
+
+    public void stopLoweringWithoutEncoder(){
+        leftSlider.setPower(0);
+        rightSlider.setPower(0);
+    }
+
+
     public enum LiftLevel {
 
         ZERO(0),
         GROUND(0),
-        LOW(0),
-        MEDIUM(0),
-        HIGH(700);
+        CLEAR(500),
+        LOW(3500),
+        MEDIUM(6000),
+        HIGH(8500);
 
         private int value;
 
@@ -43,13 +56,13 @@ public class Lift extends LinearOpMode {
 
 
     public void setup() {
-        leftSlider = hardwareMap.get(DcMotorEx.class, "leftSlider");
-        rightSlider = hardwareMap.get(DcMotorEx.class, "rightSlider");
+        leftSlider = opMode.hardwareMap.get(DcMotorEx.class, "leftSlider");
+        rightSlider = opMode.hardwareMap.get(DcMotorEx.class, "rightSlider");
         setupPos();
     }
 
     public void setupPos() {
-        leftSlider.setDirection(DcMotor.Direction.REVERSE);
+        rightSlider.setDirection(DcMotor.Direction.REVERSE);
         AZUtil.resetMotor(this, leftSlider);
         AZUtil.resetMotor(this, rightSlider);
     }
@@ -64,14 +77,30 @@ public class Lift extends LinearOpMode {
     }
 
     public void liftTo(LiftLevel level) {
-        AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), 0.25);
-        AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), 0.25);
+        AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), UP_POWER);
+        AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), UP_POWER);
 
     }
 
     public void setTo0() {
-        AZUtil.setMotorTargetPosition(leftSlider, LiftLevel.ZERO.getValue(), 0.1);
-        AZUtil.setMotorTargetPosition(rightSlider, LiftLevel.ZERO.getValue(), 0.1);
+        AZUtil.setMotorTargetPosition(leftSlider, LiftLevel.ZERO.getValue(), DOWN_POWER);
+        AZUtil.setMotorTargetPosition(rightSlider, LiftLevel.ZERO.getValue(), DOWN_POWER);
+    }
+
+    public void lowerToDrop(){
+        int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
+        int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
+        if( leftSliderCurrentPosition > 0) {
+            AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition - DROP_HEIGHT, DOWN_POWER);
+            AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition - DROP_HEIGHT, DOWN_POWER);
+        }
+    }
+
+    public void raiseAfterDrop(){
+        int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
+        int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
+        AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition + DROP_HEIGHT, DOWN_POWER);
+        AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition + DROP_HEIGHT, DOWN_POWER);
     }
 
 
