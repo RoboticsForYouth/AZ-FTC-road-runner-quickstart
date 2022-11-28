@@ -9,12 +9,12 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class PowerPlayDetection extends OpenCvPipeline {
+public class PowerPlayPipeline extends OpenCvPipeline {
 
     /*
      * An enum to define the skystone position
      */
-    public enum TSEPosition
+    public enum ConePosition
     {
         ONE,
         TWO,
@@ -33,11 +33,14 @@ public class PowerPlayDetection extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
 
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130,50);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(150,150);
 
+    public int getAvg() {
+        return avg;
+    }
 
-    static final int REGION_WIDTH = 35;
-    static final int REGION_HEIGHT = 60;
+    static final int REGION_WIDTH = 40;
+    static final int REGION_HEIGHT = 70;
 
     /*
      * Points which actually define the sample region rectangles, derived from above values
@@ -71,7 +74,7 @@ public class PowerPlayDetection extends OpenCvPipeline {
     int avg;
 
     // Volatile since accessed by OpMode thread w/o synchronization
-    private volatile TSEPosition position = TSEPosition.ONE;
+    private volatile int position = 1;
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
@@ -123,7 +126,7 @@ public class PowerPlayDetection extends OpenCvPipeline {
                 region1_pointA, // First point which defines the rectangle
                 region1_pointB, // Second point which defines the rectangle
                 BLUE, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
+                5); // Thickness of the rectangle lines
         /*
          * Draw a rectangle showing sample region 2 on the screen.
          * Simply a visual aid. Serves no functional purpose.
@@ -136,15 +139,15 @@ public class PowerPlayDetection extends OpenCvPipeline {
          */
 //
 
-        //System.out.println(avg);
+        System.out.println(avg);
 
         /*
          * Now that we found the max, we actually need to go and
          * figure out which sample region that value was from
          */
-        if(avg > 130) // full blue
+        if(avg >= 115) // full blue
         {
-            position = TSEPosition.ONE; // Record our analysis
+            position = 1; // Record our analysis
 
             /*
              * Draw a solid rectangle on top of the chosen region.
@@ -155,12 +158,12 @@ public class PowerPlayDetection extends OpenCvPipeline {
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
                     RED, // The color the rectangle is drawn in
-                    2); // Negative thickness means solid fill
+                    5); // Negative thickness means solid fill
 
         }
-        else if(avg >= 125) // half blue
+        else if(avg >= 108) // half blue
         {
-            position = TSEPosition.TWO; // Record our analysis
+            position = 2; // Record our analysis
 
             /*
              * Draw a solid rectangle on top of the chosen region.
@@ -171,12 +174,12 @@ public class PowerPlayDetection extends OpenCvPipeline {
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
                     TEAL, // The color the rectangle is drawn in
-                    2); // Negative thickness means solid fill
+                    5); // Negative thickness means solid fill
 
         }
         else // white
         {
-            position = TSEPosition.THREE; // Record our analysis
+            position = 3; // Record our analysis
 
             /*
              * Draw a solid rectangle on top of the chosen region.
@@ -187,7 +190,7 @@ public class PowerPlayDetection extends OpenCvPipeline {
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
                     GREEN, // The color the rectangle is drawn in
-                    2); // Negative thickness means solid fill
+                    5); // Negative thickness means solid fill
 
         }
 
@@ -197,7 +200,7 @@ public class PowerPlayDetection extends OpenCvPipeline {
     /*
      * Call this from the OpMode thread to obtain the latest analysis
      */
-    public TSEPosition getAnalysis()
+    public int getAnalysis()
     {
         return position;
     }

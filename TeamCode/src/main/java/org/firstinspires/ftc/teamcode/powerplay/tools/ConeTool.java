@@ -16,7 +16,7 @@ public class ConeTool extends LinearOpMode {
     }
 
     //use only during testing
-    public ConeTool(){
+    public ConeTool() {
 
     }
 
@@ -32,11 +32,12 @@ public class ConeTool extends LinearOpMode {
     }
 
     public void dropCone(){
-//        lift.lowerToDrop();
-//        sleep(500);
+        if( lift.getLiftLevel() > Lift.LiftLevel.CLEAR.getValue()) {
+            lift.lowerToDrop();
+            sleep(500);
+        }
         claw.open();
-//        sleep(500);
-//        lift.raiseAfterDrop();
+
     }
 
     public void liftTo(Lift.LiftLevel liftLevel){

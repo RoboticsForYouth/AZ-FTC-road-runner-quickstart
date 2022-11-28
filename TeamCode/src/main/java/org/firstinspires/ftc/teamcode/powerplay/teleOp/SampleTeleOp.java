@@ -11,8 +11,11 @@ import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
 @TeleOp
 public class SampleTeleOp extends LinearOpMode {
+    public static final int DEFAULT_DRIVE_FACTOR = 2;
+    public static final int SLOW_DRIVE_FACTOR = 4;
     SampleMecanumDrive drive;
     ConeTool coneTool;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -23,10 +26,14 @@ public class SampleTeleOp extends LinearOpMode {
         coneTool = new ConeTool(this);
         waitForStart();
         while (opModeIsActive()) {
+            int driveFactor = DEFAULT_DRIVE_FACTOR;
+            if( gamepad1.right_bumper){
+                driveFactor = SLOW_DRIVE_FACTOR;
+            }
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y / 1.5,
-                            -gamepad1.left_stick_x / 1.5,
+                            -gamepad1.left_stick_y / driveFactor,
+                            -gamepad1.left_stick_x / driveFactor,
                             gamepad1.right_stick_x
                     )
             );

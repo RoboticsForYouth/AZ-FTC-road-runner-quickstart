@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 @Autonomous(name = "LiftAuto")
 public class Lift extends LinearOpMode {
 
-    public static final double UP_POWER = 0.95;
-    public static final double DOWN_POWER = 0.1;
-    public static final int DROP_HEIGHT = 200;
+    public static final double UP_POWER = 1.0;
+    public static final double DOWN_POWER = 0.35;
+    public static final int DROP_HEIGHT = 700;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
     LinearOpMode opMode;
@@ -76,6 +76,9 @@ public class Lift extends LinearOpMode {
         setup();
     }
 
+    public int getLiftLevel(){
+       return leftSlider.getCurrentPosition();
+    }
     public void liftTo(LiftLevel level) {
         AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), UP_POWER);
         AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), UP_POWER);
@@ -90,17 +93,19 @@ public class Lift extends LinearOpMode {
     public void lowerToDrop(){
         int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
         int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
-        if( leftSliderCurrentPosition > 0) {
-            AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition - DROP_HEIGHT, DOWN_POWER);
-            AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition - DROP_HEIGHT, DOWN_POWER);
+        if( leftSliderCurrentPosition > LiftLevel.LOW.getValue()) {
+            AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
+            AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
         }
     }
 
     public void raiseAfterDrop(){
         int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
         int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
-        AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition + DROP_HEIGHT, DOWN_POWER);
-        AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition + DROP_HEIGHT, DOWN_POWER);
+        if( leftSliderCurrentPosition > LiftLevel.LOW.getValue()) {
+            AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition + DROP_HEIGHT, UP_POWER);
+            AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition + DROP_HEIGHT, UP_POWER);
+        }
     }
 
 
