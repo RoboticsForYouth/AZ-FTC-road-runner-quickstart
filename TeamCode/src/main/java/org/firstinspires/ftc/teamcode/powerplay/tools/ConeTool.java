@@ -32,7 +32,10 @@ public class ConeTool extends LinearOpMode {
     }
 
     public void dropCone(){
-        if( lift.getLiftLevel() > Lift.LiftLevel.CLEAR.getValue()) {
+        if( lift.getCurrentState() == Lift.LiftLevel.LOW ||
+            lift.getCurrentState() == Lift.LiftLevel.MEDIUM ||
+            lift.getCurrentState() == Lift.LiftLevel.HIGH
+        ) {
             lift.lowerToDrop();
             sleep(500);
         }
@@ -44,13 +47,14 @@ public class ConeTool extends LinearOpMode {
         lift.liftTo(liftLevel);
     }
 
+
     //use only when you need to manually reset motor to zero position
     //Scenario: The robot disconnects during competition and the slide is
     //not in zero position. We need to reset the slide to zero position for
     //all out preset buttons to work
-    public void lowerWithoutEncoder(){
-        lift.lowerWithoutEncoder();
-    }
+    public void raiseWithoutEncoder(double power){lift.raiseWithoutEncoder(power);}
+    public void lowerWithoutEncoder(double power){lift.lowerWithoutEncoder(power);}
+    public void stopLift(){lift.stopLift();}
 
     @Override
     public void runOpMode() throws InterruptedException {

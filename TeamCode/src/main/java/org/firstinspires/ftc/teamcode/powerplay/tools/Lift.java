@@ -20,19 +20,26 @@ public class Lift extends LinearOpMode {
     private DcMotorEx rightSlider;
     LinearOpMode opMode;
     SampleMecanumDrive drive;
+    private LiftLevel currentState;
 
-    public void lowerWithoutEncoder() {
+    public void lowerWithoutEncoder(double power) {
         leftSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftSlider.setPower(-1);
-        rightSlider.setPower(-1);
+        leftSlider.setPower(-power);
+        rightSlider.setPower(-power);
     }
 
-    public void stopLoweringWithoutEncoder(){
+    public void raiseWithoutEncoder(double power) {
+        leftSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlider.setPower(1);
+        rightSlider.setPower(1);
+    }
+
+    public void stopLift(){
         leftSlider.setPower(0);
         rightSlider.setPower(0);
     }
-
 
     public enum LiftLevel {
 
@@ -82,7 +89,11 @@ public class Lift extends LinearOpMode {
     public void liftTo(LiftLevel level) {
         AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), UP_POWER);
         AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), UP_POWER);
+        currentState = level;
+    }
 
+    public LiftLevel getCurrentState() {
+        return currentState;
     }
 
     public void setTo0() {

@@ -10,12 +10,12 @@ import org.firstinspires.ftc.teamcode.powerplay.tools.ConeTool;
 import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
 @TeleOp
-public class SampleTeleOp extends LinearOpMode {
+public class PowerPlayTeleOp extends LinearOpMode {
     public static final int DEFAULT_DRIVE_FACTOR = 2;
     public static final int SLOW_DRIVE_FACTOR = 4;
     SampleMecanumDrive drive;
     ConeTool coneTool;
-
+    boolean manualLiftOp = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -65,6 +65,25 @@ public class SampleTeleOp extends LinearOpMode {
                         coneTool.grabCone();
                     }
                 });
+            }
+
+            //use for correcting lift position when it stops in auto or
+            //robot disconnects
+            if(gamepad1.left_trigger > 0){
+                manualLiftOp = true;
+                coneTool.lowerWithoutEncoder(gamepad1.left_trigger);
+            }
+            if(gamepad1.left_trigger > 0){
+                manualLiftOp = true;
+                coneTool.raiseWithoutEncoder(gamepad1.right_trigger);
+            }
+
+            if( manualLiftOp
+                    && gamepad1.left_trigger == 0
+                    && gamepad1.right_trigger == 0
+            ){
+                coneTool.stopLift();
+                manualLiftOp = false;
             }
         }
     }

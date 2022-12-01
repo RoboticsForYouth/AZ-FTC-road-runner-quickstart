@@ -4,16 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(group = "sample")
 public class LeftAuto extends AutoBase {
-    @Override
-    public void runOpMode() throws InterruptedException {
-        initAuto();
-        waitForStart();
-        if (isStopRequested()) return;
-        setupPos();
-       // detection();
-        sleep(3000);
-        dropCone(true); //right
+    public LeftAuto() {
+        super();
+        setFieldPos(FieldPos.LEFT);
     }
+
 }
 
 

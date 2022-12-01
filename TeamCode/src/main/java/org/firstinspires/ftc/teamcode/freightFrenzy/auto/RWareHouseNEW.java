@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
-import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
+import org.firstinspires.ftc.teamcode.freightFrenzy.pipeline.FFDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name = "1RedWareHouseAuto")

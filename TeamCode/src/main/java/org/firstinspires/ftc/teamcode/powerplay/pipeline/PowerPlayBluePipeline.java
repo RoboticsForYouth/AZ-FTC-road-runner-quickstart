@@ -9,7 +9,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class PowerPlayPipeline extends OpenCvPipeline {
+public class PowerPlayBluePipeline extends OpenCvPipeline {
 
     /*
      * An enum to define the skystone position
@@ -33,14 +33,14 @@ public class PowerPlayPipeline extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
 
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(150,150);
+     Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(150,130);
 
     public int getAvg() {
         return avg;
     }
 
-    static final int REGION_WIDTH = 40;
-    static final int REGION_HEIGHT = 70;
+    int REGION_WIDTH = 40;
+    int REGION_HEIGHT = 80;
 
     /*
      * Points which actually define the sample region rectangles, derived from above values
@@ -84,6 +84,13 @@ public class PowerPlayPipeline extends OpenCvPipeline {
     {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
         Core.extractChannel(YCrCb, Cb, 2);
+    }
+
+    public void setBoundingBox(Point topLeft, int width, int height){
+        REGION1_TOPLEFT_ANCHOR_POINT.x = topLeft.x;
+        REGION1_TOPLEFT_ANCHOR_POINT.y = topLeft.y;
+        REGION_WIDTH = width;
+        REGION_HEIGHT = height;
     }
 
     @Override

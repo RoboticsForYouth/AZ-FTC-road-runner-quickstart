@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Arm;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Carousel;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
-import org.firstinspires.ftc.teamcode.pipeline.FFDetection;
+import org.firstinspires.ftc.teamcode.freightFrenzy.pipeline.FFDetection;
 
 public abstract class BlueAutoBase extends LinearOpMode {
     ElapsedTime runtime = new ElapsedTime();

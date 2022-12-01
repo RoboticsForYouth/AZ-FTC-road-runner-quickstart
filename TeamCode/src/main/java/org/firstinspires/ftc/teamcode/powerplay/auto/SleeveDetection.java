@@ -4,7 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.powerplay.pipeline.PowerPlayPipeline;
+import org.firstinspires.ftc.teamcode.powerplay.pipeline.PowerPlayBluePipeline;
+import org.firstinspires.ftc.teamcode.powerplay.pipeline.PowerPlayRGBPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -14,7 +15,8 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class SleeveDetection extends LinearOpMode {
     private LinearOpMode opMode;
     OpenCvWebcam webcam;
-    PowerPlayPipeline pipeline;
+    PowerPlayBluePipeline bluePipeline;
+    PowerPlayRGBPipeline rgbPipeline;
 
     public SleeveDetection(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -24,11 +26,12 @@ public class SleeveDetection extends LinearOpMode {
     }
 
     public void setup() {
-
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(opMode.hardwareMap.get(WebcamName.class, "Webcam 1"));
-        pipeline = new PowerPlayPipeline();
-        webcam.setPipeline(pipeline);
+//        bluePipeline = new PowerPlayBluePipeline();
+        rgbPipeline = new PowerPlayRGBPipeline();
+//        webcam.setPipeline(bluePipeline);
+        webcam.setPipeline(rgbPipeline);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
         // out when the RC activity is in portrait. We do our actual image processing assuming
@@ -51,6 +54,14 @@ public class SleeveDetection extends LinearOpMode {
 
     }
 
+    public int getPos() {
+        //run it 3 times, sometimes takes time
+        for (int i = 0; i < 3; i++) {
+            rgbPipeline.getAnalysis();
+        }
+        return rgbPipeline.getAnalysis();
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         this.opMode = this;
@@ -59,10 +70,13 @@ public class SleeveDetection extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            int pos = pipeline.getAnalysis();
+            int pos = rgbPipeline.getAnalysis();
 
             telemetry.addData("Position: ", pos);
-            telemetry.addData("Avg: ", pipeline.getAvg());
+            int[] avg = rgbPipeline.getAvg();
+            telemetry.addData("Red: ", avg[0]);
+            telemetry.addData("Green: ", avg[1]);
+            telemetry.addData("Blue: ", avg[2]);
             telemetry.update();
             sleep(1000);
         }
