@@ -40,7 +40,7 @@ import java.util.Date;
 /**
  * Demonstrates empty OpMode
  */
-@TeleOp(name = "Concept: NullOp", group = "Concept")
+//@TeleOp(name = "Concept: NullOp", group = "Concept")
 @Disabled
 public class ConceptNullOp extends OpMode {
 

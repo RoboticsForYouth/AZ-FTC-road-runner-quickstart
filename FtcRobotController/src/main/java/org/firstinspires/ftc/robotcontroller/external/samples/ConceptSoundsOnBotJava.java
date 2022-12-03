@@ -59,7 +59,7 @@ import java.io.File;
  *      https://github.com/ftctechnh/ftc_app/tree/master/FtcRobotController/src/main/res/raw/silver.wav
  */
 
-@TeleOp(name="Concept: Sound Files", group="Concept")
+//@TeleOp(name="Concept: Sound Files", group="Concept")
 @Disabled
 public class ConceptSoundsOnBotJava extends LinearOpMode {
 

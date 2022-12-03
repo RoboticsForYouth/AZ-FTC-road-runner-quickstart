@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
-@Autonomous
+//@Autonomous
 public class SliderTestAuto extends LinearOpMode {
 
     private DcMotorEx leftSlider;

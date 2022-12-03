@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.powerplay.tools;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous
+//@Autonomous
 public class ConeTool extends LinearOpMode {
 
     private LinearOpMode opMode;
@@ -37,7 +37,7 @@ public class ConeTool extends LinearOpMode {
             lift.getCurrentState() == Lift.LiftLevel.HIGH
         ) {
             lift.lowerToDrop();
-            sleep(500);
+            sleep(1000);
         }
         claw.open();
 
@@ -65,10 +65,10 @@ public class ConeTool extends LinearOpMode {
 
         grabCone();
         sleep(2000);
-        liftTo(Lift.LiftLevel.HIGH);
-        sleep(2000);
+        liftTo(Lift.LiftLevel.LOW);
+        sleep(1000);
         dropCone();
-        sleep(2000);
+        sleep(1000);
         liftTo(Lift.LiftLevel.ZERO);
         sleep(2000);
     }

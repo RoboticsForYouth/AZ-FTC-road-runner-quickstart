@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightSensor;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 
-@TeleOp
+//@AutonomouseOp
 public class FreightToolSensorTest extends LinearOpMode {
     FreightTool freightTool = null;
     FreightSensor freightSensor = null;

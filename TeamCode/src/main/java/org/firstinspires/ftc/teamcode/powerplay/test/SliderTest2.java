@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp
+//@TeleOp
 public class SliderTest2 extends LinearOpMode{
     private ElapsedTime runTime = new ElapsedTime();
     private DcMotor slider = null;

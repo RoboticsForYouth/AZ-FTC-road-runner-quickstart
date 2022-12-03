@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Concept: Compass Calibration", group="Concept")
+//@TeleOp(name="Concept: Compass Calibration", group="Concept")
 @Disabled
 public class ConceptCompassCalibration extends LinearOpMode {
 

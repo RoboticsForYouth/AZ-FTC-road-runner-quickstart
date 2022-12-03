@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.freightFrenzy.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(group = "sample")
+//@Autonomous(group = "sample")
 
 public class RRightCarouselWarehouse extends RedAutoBase {
 

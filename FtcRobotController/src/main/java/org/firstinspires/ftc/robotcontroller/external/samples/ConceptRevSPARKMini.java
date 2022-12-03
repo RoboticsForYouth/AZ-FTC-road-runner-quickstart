@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="REV SPARKmini Simple Drive Example", group="Concept")
+//@TeleOp(name="REV SPARKmini Simple Drive Example", group="Concept")
 @Disabled
 public class ConceptRevSPARKMini extends LinearOpMode {
 

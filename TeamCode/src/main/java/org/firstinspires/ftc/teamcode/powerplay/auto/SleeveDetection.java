@@ -62,6 +62,10 @@ public class SleeveDetection extends LinearOpMode {
         return rgbPipeline.getAnalysis();
     }
 
+    public int[] getAvgs(){
+        return rgbPipeline.getAvg();
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         this.opMode = this;

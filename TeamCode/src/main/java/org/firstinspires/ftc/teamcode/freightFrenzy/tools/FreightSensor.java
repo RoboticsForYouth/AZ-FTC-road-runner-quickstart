@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous
+//@Autonomous
 public class FreightSensor extends LinearOpMode {
     DistanceSensor sensor;
     LinearOpMode opMode = null;

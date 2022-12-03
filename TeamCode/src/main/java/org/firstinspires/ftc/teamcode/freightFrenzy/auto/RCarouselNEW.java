@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.freightFrenzy.pipeline.FFDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(name = "2RedCarouselAuto")
+//@Autonomous(name = "2RedCarouselAuto")
 public class RCarouselNEW extends LinearOpMode {
     Trajectory sharedHubDrop;
     private LinearOpMode opMode;

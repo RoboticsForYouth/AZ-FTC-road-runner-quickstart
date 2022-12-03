@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(group = "sample")
+//@Autonomous(group = "sample")
 
 public class RRTest extends LinearOpMode {
     Trajectory dropcone, park1, park2, park3;

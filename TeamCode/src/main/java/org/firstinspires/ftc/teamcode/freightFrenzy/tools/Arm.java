@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.text.MessageFormat;
 
-@Autonomous(name = "ArmAuto")
+//@Autonomous(name = "ArmAuto")
 public class Arm extends LinearOpMode {
 
     private static final int INC = 30;

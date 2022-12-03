@@ -69,7 +69,7 @@ import java.io.File;
  *
  */
 
-@TeleOp(name="Concept: Sound Resources", group="Concept")
+//@TeleOp(name="Concept: Sound Resources", group="Concept")
 @Disabled
 public class ConceptSoundsASJava extends LinearOpMode {
 

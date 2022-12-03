@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Intake;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.Wrist;
 
-@Autonomous
+//@Autonomous
 public class DuckIntakeTest extends LinearOpMode {
     Intake intake = null;
     Wrist wrist = null;

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.powerplay.tools.ConeTool;
 import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
@@ -20,6 +21,8 @@ public class AutoBase extends LinearOpMode {
     int pos;
     Trajectory dropCone, dropCone2, dropCone3, park;
     Pose2d origin;
+    private Vector2d backUp;
+
     public enum FieldPos {
         LEFT,
         RIGHT
@@ -42,7 +45,6 @@ public class AutoBase extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         runtime.reset();
     }
 
@@ -64,135 +66,87 @@ public class AutoBase extends LinearOpMode {
     public void setUpLeftSideTrajectory(){
         origin = new Pose2d(8, 40, Math.toRadians(0));
         drive.setPoseEstimate(origin);
-        Pose2d dropConePos = new Pose2d(16, 12);
+        Pose2d dropConePos = new Pose2d(16, 17);
         dropConeTrajectory = drive.trajectoryBuilder(origin)
                 .lineToSplineHeading(dropConePos)
                 .build();
 
-        Vector2d backUp = new Vector2d(8, 12);
-        Vector2d conePos1Step1 = new Vector2d(10, 60);
-        Vector2d conePos1Step2 = new Vector2d(40, 60);
+        Vector2d backUp = new Vector2d(13, 18);
+        createConePosTrajectory(backUp);
+
+
+    }
+    public void setUpRightSideTrajectory(){
+        origin = new Pose2d(8, 40, Math.toRadians(0));
+        drive.setPoseEstimate(origin);
+        Pose2d dropConePos = new Pose2d(16, 50);
+        dropConeTrajectory = drive.trajectoryBuilder(origin)
+                .lineToSplineHeading(dropConePos)
+                .build();
+
+        Vector2d backUp = new Vector2d(13, 48);
+        Vector2d conePos1Step1 = new Vector2d(10, 64);
+        Vector2d conePos1Step2 = new Vector2d(35, 64);
         conePos1Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
+                .back(4)
+               //.splineToConstantHeading(backUp, Math.toRadians(45))
+                .splineToConstantHeading(conePos1Step1, Math.toRadians(0))
+                .splineToConstantHeading(conePos1Step2, Math.toRadians(0))
+                .build();
+
+        Vector2d conePos2Step1 = new Vector2d(10, 40);
+        Vector2d conePos2Step2 = new Vector2d(45, 40);
+        Vector2d conePos2Step3 = new Vector2d(39, 40);
+        conePos2Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
+                .back(4)
+                //.splineToConstantHeading(backUp, Math.toRadians(0))
+                .splineToConstantHeading(conePos2Step1, Math.toRadians(45))
+                .splineToConstantHeading(conePos2Step2, Math.toRadians(0))
+                .splineToConstantHeading(conePos2Step3, Math.toRadians(0))
+                .build();
+
+        Vector2d conePos3Step1 = new Vector2d(10, 0);
+        Vector2d conePos3Step2 = new Vector2d(30, 0);
+        conePos3Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
+                .back(4)
+                //.splineToConstantHeading(backUp, Math.toRadians(45))
+                .splineToConstantHeading(conePos3Step1, Math.toRadians(0))
+                .splineToConstantHeading(conePos3Step2, Math.toRadians(0))
+                .build();
+
+    }
+    private void createConePosTrajectory(Vector2d backUp) {
+        Vector2d conePos1Step1 = new Vector2d(10, 60);
+        Vector2d conePos1Step2 = new Vector2d(35, 60);
+        conePos1Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
+                .back(4)
+                //.splineToConstantHeading(backUp, Math.toRadians(45))
                 .splineToConstantHeading(conePos1Step1, Math.toRadians(0))
                 .splineToConstantHeading(conePos1Step2, Math.toRadians(0))
                 .build();
 
         Vector2d conePos2Step1 = new Vector2d(10, 30);
-        Vector2d conePos2Step2 = new Vector2d(40, 30);
+        Vector2d conePos2Step2 = new Vector2d(45, 30);
+        Vector2d conePos2Step3 = new Vector2d(39, 30);
         conePos2Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
-                .splineToConstantHeading(conePos2Step1, Math.toRadians(0))
+                .back(4)
+                //.splineToConstantHeading(backUp, Math.toRadians(0))
+                .splineToConstantHeading(conePos2Step1, Math.toRadians(45))
                 .splineToConstantHeading(conePos2Step2, Math.toRadians(0))
+                .splineToConstantHeading(conePos2Step3, Math.toRadians(0))
                 .build();
 
-      Vector2d conePos3Step1 = new Vector2d(10, 0);
-      Vector2d conePos3Step2 = new Vector2d(40, 0);
+        Vector2d conePos3Step1 = new Vector2d(10, 6);
+        Vector2d conePos3Step2 = new Vector2d(30, 6);
         conePos3Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
+                .back(4)
+                //.splineToConstantHeading(backUp, Math.toRadians(45))
                 .splineToConstantHeading(conePos3Step1, Math.toRadians(0))
                 .splineToConstantHeading(conePos3Step2, Math.toRadians(0))
                 .build();
-
     }
 
-    public void setUpRightSideTrajectory(){
-        origin = new Pose2d(8, -40, Math.toRadians(0));
-        drive.setPoseEstimate(origin);
-        Pose2d dropConePos = new Pose2d(16, -12);
-        dropConeTrajectory = drive.trajectoryBuilder(origin)
-                .lineToSplineHeading(dropConePos)
-                .build();
 
-        Vector2d backUp = new Vector2d(8, -12);
-        Vector2d conePos1Step1 = new Vector2d(10, -60);
-        Vector2d conePos1Step2 = new Vector2d(40, -60);
-        conePos1Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
-                .splineToConstantHeading(conePos1Step1, Math.toRadians(0))
-                .splineToConstantHeading(conePos1Step2, Math.toRadians(0))
-                .build();
-
-        Vector2d conePos2Step1 = new Vector2d(10, -30);
-        Vector2d conePos2Step2 = new Vector2d(40, -30);
-        conePos2Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
-                .splineToConstantHeading(conePos2Step1, Math.toRadians(0))
-                .splineToConstantHeading(conePos2Step2, Math.toRadians(0))
-                .build();
-
-        Vector2d conePos3Step1 = new Vector2d(10, 0);
-        Vector2d conePos3Step2 = new Vector2d(40, 0);
-        conePos3Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
-                .splineToConstantHeading(backUp, Math.toRadians(0))
-                .splineToConstantHeading(conePos3Step1, Math.toRadians(0))
-                .splineToConstantHeading(conePos3Step2, Math.toRadians(0))
-                .build();
-
-    }
-
-    public void dropCone(boolean left) {
-        if(left) {
-            dropCone = drive.trajectoryBuilder(origin)
-                    .lineToSplineHeading(new Pose2d(origin.getX(), origin.getY() + 32, origin.getHeading())).build();
-            dropCone2 = drive.trajectoryBuilder(dropCone.end())
-                    .lineToSplineHeading(new Pose2d(origin.getX() + 50, origin.getY() + 34, origin.getHeading()-45)).build();
-        } else {
-            dropCone = drive.trajectoryBuilder(new Pose2d(originX, originY, Math.toRadians(originHeading)))
-                    .lineToSplineHeading(new Pose2d(originX + 30, originY, originHeading+90)).build();
-            dropCone2 = drive.trajectoryBuilder(dropCone.end())
-                    .lineToSplineHeading(new Pose2d(originX + 42, originY - 24, originHeading+180)).build();
-        }
-//        AZUtil.runInParallel(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        sleep(500);
-//                        coneTool.liftTo(Lift.LiftLevel.HIGH);
-//
-//                    }
-//                }
-//        );
-        drive.followTrajectory(dropCone);
-        drive.followTrajectory(dropCone2);
-        sleep(1000);
-        coneTool.dropCone();
-//        AZUtil.runInParallel(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        sleep(1000);
-//                        coneTool.liftTo(Lift.LiftLevel.ZERO);
-//
-//                    }
-//                }
-//        );
-
-    }
-
-    public void park(int pos, boolean left) {
-        if(left) {
-
-            if(pos == 1) {
-
-            } else if(pos == 2) {
-
-            } else {
-
-            }
-
-        } else {
-
-            if(pos == 1) {
-
-            } else if(pos == 2) {
-
-            } else {
-
-            }
-
-        }
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -205,27 +159,43 @@ public class AutoBase extends LinearOpMode {
                 setUpRightSideTrajectory();
                 break;
         }
-        waitForStart();
-        //Uncomment after navigation testing is complete
-        coneTool.grabCone();
-        sleep(1000);
-        pos = sleeveDetection.getPos();
-        //Uncomment after navigation testing is complete
-        coneTool.liftTo(Lift.LiftLevel.LOW);
-        sleep(500);
-        drive.followTrajectory(dropConeTrajectory);
-        telemetry.addData("Position", pos);
+        telemetry.addData("Trajectory", "Created");
         telemetry.update();
+        //detect sleeve pos to verify alignment.Need to run it for a few times before
+        //the sleeve is accurately detected
+        for(int i=0; i<3; i++) {
+            getSleevePos();
+        }
 
-//Uncomment after navigation testing is complete
+        waitForStart();
+
+        AZUtil.runInParallel(new Runnable() {
+            @Override
+            public void run() {
+                coneTool.grabCone();
+            }
+        });
+        getSleevePos();
+        sleep(1000);
+
+        AZUtil.runInParallel(new Runnable() {
+            @Override
+            public void run() {
+                coneTool.liftTo(Lift.LiftLevel.LOW);
+            }
+        });
+        sleep(1000);
+        drive.followTrajectory(dropConeTrajectory);
+
         sleep(1000);
         coneTool.dropCone();
         sleep(1000);
-
-        //go back to origin
-//        drive.followTrajectory(drive.trajectoryBuilder(dropConeTrajectory.end())
-//                .lineToSplineHeading(origin).build());
-
+        AZUtil.runInParallel(new Runnable() {
+            @Override
+            public void run() {
+                coneTool.liftTo(Lift.LiftLevel.ZERO);
+            }
+        });
         switch (pos){
             case 1:
                 drive.followTrajectory(conePos1Trajectory);
@@ -237,8 +207,18 @@ public class AutoBase extends LinearOpMode {
                 drive.followTrajectory(conePos3Trajectory);
                 break;
         }
-        //Uncomment after navigation testing is complete
-        coneTool.liftTo(Lift.LiftLevel.ZERO);
+
+        //TODO: need to accurately determine the time to ensure < 30 secs
         sleep(5000);
+    }
+
+    private void getSleevePos() {
+        pos = sleeveDetection.getPos();
+        telemetry.addData("Pos", pos);
+        int[] avg = sleeveDetection.getAvgs();
+        telemetry.addData("Red: ", avg[0]);
+        telemetry.addData("Green: ", avg[1]);
+        telemetry.addData("Blue: ", avg[2]);
+        telemetry.update();
     }
 }

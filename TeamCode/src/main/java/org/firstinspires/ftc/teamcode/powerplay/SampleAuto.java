@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
-@Autonomous(group = "sample")
+//@Autonomous(group = "sample")
 public class SampleAuto extends LinearOpMode {
     DcMotorEx leftFront;
     DcMotorEx leftRear;

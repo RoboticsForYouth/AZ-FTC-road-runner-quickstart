@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@Autonomous
+//@Autonomous
 public class Wrist extends LinearOpMode {
 
     Servo wrist;

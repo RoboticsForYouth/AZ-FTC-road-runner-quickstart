@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "ClawAuto")
+//@Autonomous(name = "ClawAuto")
 public class Claw extends LinearOpMode {
 
     private Servo claw;
     LinearOpMode opMode;
     public enum ClawPos {
 
-        OPEN(0.6),
-        CLOSE(0.3);
+        OPEN(0.5),
+        CLOSE(0.2);
 
         private double value;
 

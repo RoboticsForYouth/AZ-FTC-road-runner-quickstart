@@ -47,9 +47,14 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 coneTool.liftTo(Lift.LiftLevel.LOW); }
             else if (gamepad1.dpad_down) {
                 coneTool.liftTo(Lift.LiftLevel.CLEAR);
-
             } else if (gamepad1.left_bumper) {
                 coneTool.liftTo(Lift.LiftLevel.ZERO);
+            }
+            else if (gamepad1.y) {
+                coneTool.liftTo(Lift.LiftLevel.FOURTH_CONE);
+            }
+            else if (gamepad1.a) {
+                coneTool.liftTo(Lift.LiftLevel.SECOND_CONE);
             }
             if (gamepad1.x) {
                 AZUtil.runInParallel(new Runnable() {
@@ -73,7 +78,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 manualLiftOp = true;
                 coneTool.lowerWithoutEncoder(gamepad1.left_trigger);
             }
-            if(gamepad1.left_trigger > 0){
+            if(gamepad1.right_trigger > 0){
                 manualLiftOp = true;
                 coneTool.raiseWithoutEncoder(gamepad1.right_trigger);
             }

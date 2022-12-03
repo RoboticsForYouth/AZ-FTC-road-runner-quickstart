@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Saurav Test Auto", group="Saurav Test Auto")
+//@Autonomous(name="Saurav Test Auto", group="Saurav Test Auto")
 public class SauravTestAuto extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

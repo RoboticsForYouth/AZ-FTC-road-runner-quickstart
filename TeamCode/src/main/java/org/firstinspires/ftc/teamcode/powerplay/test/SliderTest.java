@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous
+//@Autonomous (name="OldSliderTest")
 public class SliderTest extends LinearOpMode {
     private DcMotor slider = null;
     private Servo elbow = null;

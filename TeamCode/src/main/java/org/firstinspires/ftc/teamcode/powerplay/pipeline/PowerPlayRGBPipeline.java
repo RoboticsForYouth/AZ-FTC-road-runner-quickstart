@@ -33,14 +33,14 @@ public class PowerPlayRGBPipeline extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
 
-     Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(145,115);
+     Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(145,120);
 
     public int[] getAvg() {
         return new int[]{avgRed, avgGreen, avgBlue };
     }
 
     int REGION_WIDTH = 40;
-    int REGION_HEIGHT = 75;
+    int REGION_HEIGHT = 65;
 
     /*
      * Points which actually define the sample region rectangles, derived from above values
@@ -165,12 +165,11 @@ public class PowerPlayRGBPipeline extends OpenCvPipeline {
 
         position = 1;
         Scalar borderColor = BLUE;
-        if( avgGreen > avgBlue){
+
+        if( avgGreen > avgBlue && avgGreen > avgRed){
             position = 2;
             borderColor = GREEN;
-        }
-
-        if( avgRed > avgGreen ){
+        } else if(avgRed > avgBlue && avgRed > avgGreen) {
             position = 3;
             borderColor = RED;
         }

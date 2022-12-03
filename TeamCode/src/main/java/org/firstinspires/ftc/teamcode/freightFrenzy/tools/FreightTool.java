@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.auto.AutoUtil;
 import org.firstinspires.ftc.teamcode.freightFrenzy.auto.RWareHouseNEW;
 
-@Autonomous(name = "FreightToolAuto")
+//@Autonomous(name = "FreightToolAuto")
 public class FreightTool extends LinearOpMode {
     Intake intake;
     Wrist wrist;

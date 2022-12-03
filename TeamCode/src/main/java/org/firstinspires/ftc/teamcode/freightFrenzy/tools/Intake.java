@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@Autonomous(name = "IntakeAuto")
+//@Autonomous(name = "IntakeAuto")
 public class Intake extends LinearOpMode {
 
     CRServo intake;

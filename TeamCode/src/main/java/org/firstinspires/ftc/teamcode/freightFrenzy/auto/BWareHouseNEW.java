@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 import org.firstinspires.ftc.teamcode.freightFrenzy.pipeline.FFDetection;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(name="1BlueWareHouseAuto")
+//@Autonomous(name="1BlueWareHouseAuto")
 public class BWareHouseNEW extends LinearOpMode {
     Trajectory sharedHubDrop;
     private LinearOpMode opMode;

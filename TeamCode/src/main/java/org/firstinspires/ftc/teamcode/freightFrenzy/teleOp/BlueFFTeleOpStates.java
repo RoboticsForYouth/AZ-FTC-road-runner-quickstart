@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@TeleOp
+//@TeleOp
 public class BlueFFTeleOpStates extends FFTeleOpStates {
 
     void autoSharedHubOverBarrierAuto() {

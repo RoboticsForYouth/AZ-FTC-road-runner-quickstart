@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import java.text.MessageFormat;
 
-@Autonomous(name = "TurnTableAuto")
+//@Autonomous(name = "TurnTableAuto")
 public class TurnTable extends LinearOpMode {
 
     DcMotorEx turnMotor;

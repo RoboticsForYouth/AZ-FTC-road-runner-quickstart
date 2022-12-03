@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.FreightTool;
 
-@Autonomous
+//@Autonomous
 public class FToolLevelTestAuto extends LinearOpMode {
     FreightTool freightTool = null;
 

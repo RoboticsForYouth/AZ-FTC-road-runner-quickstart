@@ -66,7 +66,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained below
  */
 
-@TeleOp(name="Concept: VuMark Id Webcam", group ="Concept")
+//@TeleOp(name="Concept: VuMark Id Webcam", group ="Concept")
 @Disabled
 public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
 

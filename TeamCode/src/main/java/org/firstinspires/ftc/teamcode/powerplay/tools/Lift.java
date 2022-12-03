@@ -10,11 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
-@Autonomous(name = "LiftAuto")
+//@Autonomous(name = "LiftAuto")
 public class Lift extends LinearOpMode {
 
     public static final double UP_POWER = 1.0;
-    public static final double DOWN_POWER = 0.35;
+    public static final double DOWN_POWER = 1.0;
     public static final int DROP_HEIGHT = 700;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
@@ -39,16 +39,20 @@ public class Lift extends LinearOpMode {
     public void stopLift(){
         leftSlider.setPower(0);
         rightSlider.setPower(0);
+        leftSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public enum LiftLevel {
 
         ZERO(0),
         GROUND(0),
-        CLEAR(500),
-        LOW(3500),
-        MEDIUM(6000),
-        HIGH(8500);
+        SECOND_CONE(300),
+        CLEAR(400),
+        FOURTH_CONE(800),
+        LOW(3250),
+        MEDIUM(5750),
+        HIGH(8000);
 
         private int value;
 
@@ -104,7 +108,7 @@ public class Lift extends LinearOpMode {
     public void lowerToDrop(){
         int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
         int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
-        if( leftSliderCurrentPosition > LiftLevel.LOW.getValue()) {
+        if( leftSliderCurrentPosition > DROP_HEIGHT) {
             AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
             AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
         }

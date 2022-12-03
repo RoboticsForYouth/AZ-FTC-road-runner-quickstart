@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp
+//@TeleOp
 public class ClawTest extends LinearOpMode {
 
     private SampleMecanumDrive drive;
