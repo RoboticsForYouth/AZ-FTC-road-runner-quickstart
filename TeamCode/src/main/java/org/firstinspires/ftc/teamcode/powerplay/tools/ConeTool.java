@@ -37,7 +37,7 @@ public class ConeTool extends LinearOpMode {
             lift.getCurrentState() == Lift.LiftLevel.HIGH
         ) {
             lift.lowerToDrop();
-            sleep(1000);
+            sleep(500);
         }
         claw.open();
 

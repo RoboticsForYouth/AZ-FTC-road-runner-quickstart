@@ -85,8 +85,8 @@ public class AutoBase extends LinearOpMode {
                 .build();
 
         Vector2d backUp = new Vector2d(13, 48);
-        Vector2d conePos1Step1 = new Vector2d(10, 64);
-        Vector2d conePos1Step2 = new Vector2d(35, 64);
+        Vector2d conePos1Step1 = new Vector2d(10, 66);
+        Vector2d conePos1Step2 = new Vector2d(35, 66);
         conePos1Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
                 .back(4)
                //.splineToConstantHeading(backUp, Math.toRadians(45))
@@ -116,8 +116,8 @@ public class AutoBase extends LinearOpMode {
 
     }
     private void createConePosTrajectory(Vector2d backUp) {
-        Vector2d conePos1Step1 = new Vector2d(10, 60);
-        Vector2d conePos1Step2 = new Vector2d(35, 60);
+        Vector2d conePos1Step1 = new Vector2d(10, 62);
+        Vector2d conePos1Step2 = new Vector2d(35, 62);
         conePos1Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
                 .back(4)
                 //.splineToConstantHeading(backUp, Math.toRadians(45))
@@ -137,7 +137,7 @@ public class AutoBase extends LinearOpMode {
                 .build();
 
         Vector2d conePos3Step1 = new Vector2d(10, 6);
-        Vector2d conePos3Step2 = new Vector2d(30, 6);
+        Vector2d conePos3Step2 = new Vector2d(40, 6);
         conePos3Trajectory = drive.trajectoryBuilder(dropConeTrajectory.end())
                 .back(4)
                 //.splineToConstantHeading(backUp, Math.toRadians(45))

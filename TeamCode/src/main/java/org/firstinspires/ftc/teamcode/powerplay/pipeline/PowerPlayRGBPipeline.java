@@ -33,7 +33,7 @@ public class PowerPlayRGBPipeline extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
 
-     Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(145,120);
+     Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(120,120);
 
     public int[] getAvg() {
         return new int[]{avgRed, avgGreen, avgBlue };
