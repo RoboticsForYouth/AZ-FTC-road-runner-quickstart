@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.powerplay.tools;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -74,4 +76,17 @@ public class ConeTool extends LinearOpMode {
     }
 
 
+    public void setConeThreshold() {
+        claw.setGrabThreshold();
+    }
+
+    public boolean isConeDetected() {
+        return claw.isConeDetected();
+    }
+    public int getConeColor(int red, int green, int blue) {
+        if(red > blue) {
+            return Color.RED;
+        }
+        return Color.BLUE;
+    }
 }

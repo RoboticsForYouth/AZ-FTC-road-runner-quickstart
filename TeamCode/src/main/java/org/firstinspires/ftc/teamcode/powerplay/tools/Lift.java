@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -11,11 +12,13 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
 //@Autonomous(name = "LiftAuto")
+@TeleOp
 public class Lift extends LinearOpMode {
 
-    public static final double UP_POWER = 1.0;
-    public static final double DOWN_POWER = 1.0;
-    public static final int DROP_HEIGHT = 700;
+    public static final double UP_POWER = .95;
+    public static final double DOWN_POWER = .5;
+    public static final int DROP_HEIGHT = 200;
+    public static final int INC = 25;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
     LinearOpMode opMode;
@@ -50,9 +53,9 @@ public class Lift extends LinearOpMode {
         SECOND_CONE(300),
         CLEAR(400),
         FOURTH_CONE(800),
-        LOW(3250),
-        MEDIUM(5750),
-        HIGH(8000);
+        LOW(1400),
+        MEDIUM(2050),
+        HIGH(2690);
 
         private int value;
 
@@ -73,7 +76,7 @@ public class Lift extends LinearOpMode {
     }
 
     public void setupPos() {
-        rightSlider.setDirection(DcMotor.Direction.REVERSE);
+        leftSlider.setDirection(DcMotor.Direction.REVERSE);
         AZUtil.resetMotor(this, leftSlider);
         AZUtil.resetMotor(this, rightSlider);
     }
@@ -91,8 +94,12 @@ public class Lift extends LinearOpMode {
        return leftSlider.getCurrentPosition();
     }
     public void liftTo(LiftLevel level) {
-        AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), UP_POWER);
-        AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), UP_POWER);
+        double power = UP_POWER;
+        if( leftSlider.getCurrentPosition() > level.getValue()){
+            power = DOWN_POWER;
+        }
+        AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), power);
+        AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), power);
         currentState = level;
     }
 
@@ -134,26 +141,31 @@ public class Lift extends LinearOpMode {
 
         waitForStart();
         int count = 0;
-        while(opModeIsActive() & count < 1) {
-            liftTo(LiftLevel.HIGH);
-            sleep(5000);
+        while(opModeIsActive()) {
+            if( gamepad1.right_trigger > 0){
+                AZUtil.setMotorTargetPosition(leftSlider, leftSlider.getCurrentPosition()+ INC, UP_POWER);
+                AZUtil.setMotorTargetPosition(leftSlider, rightSlider.getCurrentPosition()+ INC, UP_POWER);
+            } else if ( gamepad1.left_trigger > 0){
+                AZUtil.setMotorTargetPosition(leftSlider, leftSlider.getCurrentPosition()- INC, DOWN_POWER);
+                AZUtil.setMotorTargetPosition(leftSlider, rightSlider.getCurrentPosition()- INC, DOWN_POWER);
+            }
 
-            telemetry.addLine("Top pos");
+            if( gamepad1.dpad_up){
+                liftTo(LiftLevel.MEDIUM);
+            }
+            else if ( gamepad1.dpad_down ){
+                liftTo(LiftLevel.ZERO);
+            } else if (gamepad1.dpad_left){
+                liftTo(LiftLevel.LOW);
+            } else if (gamepad1.dpad_right){
+                liftTo(LiftLevel.HIGH);
+            }
+            telemetry.addLine("Pos");
+            telemetry.addData("Gamepad", gamepad1);
             telemetry.addData("Left Slider Pos", leftSlider.getCurrentPosition());
             telemetry.addData("Right Slider Pos", rightSlider.getCurrentPosition());
             telemetry.update();
-            setTo0();
-            sleep(5000);
-            telemetry.addLine("Bottom pos");
-            telemetry.addData("Left Slider Pos", leftSlider.getCurrentPosition());
-            telemetry.addData("Right Slider Pos", rightSlider.getCurrentPosition());
-            telemetry.update();
-            sleep(15000);
-            count++;
         }
-
-
-
     }
 
 }

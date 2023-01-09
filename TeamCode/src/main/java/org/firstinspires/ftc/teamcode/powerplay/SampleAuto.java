@@ -4,10 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 
-//@Autonomous(group = "sample")
+@Autonomous(group = "sample")
 public class SampleAuto extends LinearOpMode {
     DcMotorEx leftFront;
     DcMotorEx leftRear;
@@ -18,15 +19,16 @@ public class SampleAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        leftRear = hardwareMap.get(DcMotorEx.class, "backLeft");
-        rightRear = hardwareMap.get(DcMotorEx.class, "backRight");
-        rightFront = hardwareMap.get(DcMotorEx.class, "frontRight");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
 
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
         leftRear.setDirection(DcMotor.Direction.FORWARD);
-        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         DcMotorEx[] motors = { leftFront, leftRear, rightRear, rightFront };
 
@@ -43,14 +45,14 @@ public class SampleAuto extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        AZUtil.setMotorTargetPosition(leftFront, 5000, 1);
-        sleep(5000);
-        AZUtil.setMotorTargetPosition(rightFront, 5000, 1);
-        sleep(5000);
-        AZUtil.setMotorTargetPosition(leftRear, 5000, 1);
-        sleep(5000);
-        AZUtil.setMotorTargetPosition(rightRear, 5000, 1);
-        sleep(5000);
+        AZUtil.setMotorTargetPosition(leftFront, 1000, 1);
+        sleep(1000);
+        AZUtil.setMotorTargetPosition(rightFront, 1000, 1);
+        sleep(1000);
+        AZUtil.setMotorTargetPosition(leftRear, 1000, 1);
+        sleep(1000);
+        AZUtil.setMotorTargetPosition(rightRear, 1000, 1);
+        sleep(1000);
 
 
 //        drive.followTrajectory(park);

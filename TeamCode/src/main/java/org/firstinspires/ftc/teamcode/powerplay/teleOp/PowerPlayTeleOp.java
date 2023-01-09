@@ -16,6 +16,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
     SampleMecanumDrive drive;
     ConeTool coneTool;
     boolean manualLiftOp = false;
+    boolean grabMode = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,6 +40,11 @@ public class PowerPlayTeleOp extends LinearOpMode {
             );
 
             drive.update();
+
+            if(gamepad1.a  && gamepad1.y){
+                coneTool.setConeThreshold();
+            }
+
             if (gamepad1.dpad_right) {
                 coneTool.liftTo(Lift.LiftLevel.HIGH);
             } else if (gamepad1.dpad_up) {
@@ -56,6 +62,7 @@ public class PowerPlayTeleOp extends LinearOpMode {
             else if (gamepad1.a) {
                 coneTool.liftTo(Lift.LiftLevel.SECOND_CONE);
             }
+
             if (gamepad1.x) {
                 AZUtil.runInParallel(new Runnable() {
                     @Override
@@ -63,13 +70,19 @@ public class PowerPlayTeleOp extends LinearOpMode {
                         coneTool.dropCone();
                     }
                 });
-            } else if (gamepad1.b) {
-                AZUtil.runInParallel(new Runnable() {
-                    @Override
-                    public void run() {
-                        coneTool.grabCone();
-                    }
-                });
+            }
+            else if (gamepad1.b) {
+                grabMode = true;
+            }
+            if( grabMode == true ) {
+                if(coneTool.isConeDetected() || gamepad1.b) {
+                    AZUtil.runInParallel(new Runnable() {
+                        @Override
+                        public void run() {
+                            coneTool.grabCone();
+                        }
+                    });
+                }
             }
 
             //use for correcting lift position when it stops in auto or
