@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.powerplay;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.aztools.AZUtil;
 
 //@Autonomous
 public class SliderTestAuto extends LinearOpMode {

@@ -1,29 +1,30 @@
 package org.firstinspires.ftc.teamcode.powerplay.tools;
 
+import android.util.Pair;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.aztools.AZUtil;
 
 //@Autonomous(name = "LiftAuto")
 @TeleOp
 public class Lift extends LinearOpMode {
 
     public static final double UP_POWER = .95;
-    public static final double DOWN_POWER = .5;
-    public static final int DROP_HEIGHT = 200;
+    public static final double DOWN_POWER = .6;
+    public static int DROP_HEIGHT = 300;
     public static final int INC = 25;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
     LinearOpMode opMode;
     SampleMecanumDrive drive;
-    private LiftLevel currentState;
+    private LiftLevel currentState = LiftLevel.ZERO;
 
     public void lowerWithoutEncoder(double power) {
         leftSlider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -48,14 +49,20 @@ public class Lift extends LinearOpMode {
 
     public enum LiftLevel {
 
+        //Cone Stack Levels
+        CONE_5(430),
+        CONE_4(322),
+        CONE_3(250),
+        CONE_2(110),
+
         ZERO(0),
         GROUND(0),
         SECOND_CONE(300),
-        CLEAR(400),
+        CLEAR(100),
         FOURTH_CONE(800),
-        LOW(1400),
-        MEDIUM(2050),
-        HIGH(2690);
+        LOW(1250),
+        MEDIUM(1950),
+        HIGH(2640);
 
         private int value;
 
@@ -90,12 +97,11 @@ public class Lift extends LinearOpMode {
         setup();
     }
 
-    public int getLiftLevel(){
-       return leftSlider.getCurrentPosition();
-    }
     public void liftTo(LiftLevel level) {
         double power = UP_POWER;
-        if( leftSlider.getCurrentPosition() > level.getValue()){
+        Pair<Integer, Integer> currentPosition = getCurrentPosition();
+        //lower speed while sliding down
+        if( currentState.getValue() > level.getValue()){
             power = DOWN_POWER;
         }
         AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), power);
@@ -130,9 +136,17 @@ public class Lift extends LinearOpMode {
         }
     }
 
+    //Left - first, Right - Second
+    public Pair<Integer, Integer> getCurrentPosition(){
+        return new Pair<>(leftSlider.getCurrentPosition(), rightSlider.getCurrentPosition());
+    }
 
     @Override
     public void runOpMode() {
+        testLiftPosition();
+    }
+
+    private void testLiftPosition() {
         setup();
         drive = new SampleMecanumDrive(opMode.hardwareMap);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -145,7 +159,9 @@ public class Lift extends LinearOpMode {
             if( gamepad1.right_trigger > 0){
                 AZUtil.setMotorTargetPosition(leftSlider, leftSlider.getCurrentPosition()+ INC, UP_POWER);
                 AZUtil.setMotorTargetPosition(leftSlider, rightSlider.getCurrentPosition()+ INC, UP_POWER);
-            } else if ( gamepad1.left_trigger > 0){
+            } else if ( gamepad1.left_trigger > 0 &&
+                    //prevent from going below zero
+                    ( getCurrentPosition().first > 0 && getCurrentPosition().second > 0)){
                 AZUtil.setMotorTargetPosition(leftSlider, leftSlider.getCurrentPosition()- INC, DOWN_POWER);
                 AZUtil.setMotorTargetPosition(leftSlider, rightSlider.getCurrentPosition()- INC, DOWN_POWER);
             }
@@ -167,5 +183,7 @@ public class Lift extends LinearOpMode {
             telemetry.update();
         }
     }
-
+    public void setDropHeight(int height) {
+        DROP_HEIGHT = height;
+    }
 }

@@ -29,8 +29,6 @@ public class ConeTool extends LinearOpMode {
 
     public void grabCone(){
         claw.close();
-//        sleep(1000);
-//        lift.liftTo(Lift.LiftLevel.CLEAR);
     }
 
     public void dropCone(){
@@ -88,5 +86,11 @@ public class ConeTool extends LinearOpMode {
             return Color.RED;
         }
         return Color.BLUE;
+    }
+    public void setConeColor(int color) {
+        claw.setConeColor(color);
+    }
+    public void setDropHeight(int height) {
+        lift.setDropHeight(height);
     }
 }

@@ -18,7 +18,7 @@ public class Claw extends LinearOpMode {
     private int coneColor = RED;
 
 
-    private static int tolerance = 15;
+    private static int tolerance = 30;
 
     private static int grabThresholdColor = 180;
 
@@ -28,8 +28,8 @@ public class Claw extends LinearOpMode {
 
     public enum ClawPos {
 
-        OPEN(0.6),
-        CLOSE(0.3);
+        OPEN(0.61),
+        CLOSE(0.4);
 
         private double value;
 
@@ -59,7 +59,6 @@ public class Claw extends LinearOpMode {
         } else {
             return colorSensor.blue() > (grabThresholdColor-tolerance);
         }
-
     }
 
     public void setGrabThreshold(){
@@ -68,9 +67,9 @@ public class Claw extends LinearOpMode {
         } else {
             grabThresholdColor = colorSensor.blue();
         }
-        telemetry.addData("coneColor:", coneColor);
-        telemetry.addData("Threshold:", grabThresholdColor);
-        telemetry.update();
+        opMode.telemetry.addData("coneColor:", coneColor);
+        opMode.telemetry.addData("Threshold:", grabThresholdColor);
+        opMode.telemetry.update();
     }
 
     public void setConeColor(int color){

@@ -1,22 +1,35 @@
 package org.firstinspires.ftc.teamcode.powerplay.teleOp;
 
+import android.graphics.Color;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.aztools.AZUtil;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
 import org.firstinspires.ftc.teamcode.powerplay.tools.ConeTool;
 import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
 @TeleOp
-public class PowerPlayTeleOp extends LinearOpMode {
+public class RedPowerPlayTeleOp extends LinearOpMode {
     public static final int DEFAULT_DRIVE_FACTOR = 2;
     public static final int SLOW_DRIVE_FACTOR = 4;
     SampleMecanumDrive drive;
     ConeTool coneTool;
     boolean manualLiftOp = false;
+    private ElapsedTime runtime = new ElapsedTime();
     boolean grabMode = false;
+    private Lift.LiftLevel[] liftLevels = new Lift.LiftLevel[]{
+            Lift.LiftLevel.CONE_5,
+            Lift.LiftLevel.CONE_4,
+            Lift.LiftLevel.CONE_3,
+            Lift.LiftLevel.CONE_2,
+            Lift.LiftLevel.CLEAR
+    };
+    private int coneStackCount = 0;
+    private boolean coneStackMode = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,7 +38,10 @@ public class PowerPlayTeleOp extends LinearOpMode {
 
         drive = new SampleMecanumDrive(hardwareMap);
         coneTool = new ConeTool(this);
+        coneTool.setDropHeight(300);
+        coneTool.setConeColor(getConeColor());
         waitForStart();
+        grabMode = true;
         while (opModeIsActive()) {
             int driveFactor = DEFAULT_DRIVE_FACTOR;
             if( gamepad1.right_bumper){
@@ -35,13 +51,13 @@ public class PowerPlayTeleOp extends LinearOpMode {
                     new Pose2d(
                             -gamepad1.left_stick_y / driveFactor,
                             -gamepad1.left_stick_x / driveFactor,
-                            gamepad1.right_stick_x
+                            -gamepad1.right_stick_x
                     )
             );
 
             drive.update();
 
-            if(gamepad1.a  && gamepad1.y){
+            if(gamepad1.right_bumper){
                 coneTool.setConeThreshold();
             }
 
@@ -55,15 +71,28 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 coneTool.liftTo(Lift.LiftLevel.CLEAR);
             } else if (gamepad1.left_bumper) {
                 coneTool.liftTo(Lift.LiftLevel.ZERO);
+                grabMode = true;
             }
             else if (gamepad1.y) {
-                coneTool.liftTo(Lift.LiftLevel.FOURTH_CONE);
+                if(!coneStackMode) {
+                    runtime.reset();
+                    coneStackMode = true;
+                    coneTool.liftTo(liftLevels[coneStackCount]);
+                    coneStackCount++;
+                    if (coneStackCount >= 5) {
+                        coneStackCount = 0;
+                    }
+                }
+                if(coneStackMode && runtime.seconds() >= 1.0) {
+                    coneStackMode = false;
+                }
             }
             else if (gamepad1.a) {
                 coneTool.liftTo(Lift.LiftLevel.SECOND_CONE);
             }
 
             if (gamepad1.x) {
+                grabMode = false;
                 AZUtil.runInParallel(new Runnable() {
                     @Override
                     public void run() {
@@ -71,11 +100,14 @@ public class PowerPlayTeleOp extends LinearOpMode {
                     }
                 });
             }
-            else if (gamepad1.b) {
-                grabMode = true;
-            }
+
+//            telemetry.addData("Status", grabMode);
+//            telemetry.update();
             if( grabMode == true ) {
-                if(coneTool.isConeDetected() || gamepad1.b) {
+//                String detected = "" + coneTool.isConeDetected();
+//                telemetry.addData("Status", detected);
+//                telemetry.update();
+                if (coneTool.isConeDetected() || gamepad1.b) {
                     AZUtil.runInParallel(new Runnable() {
                         @Override
                         public void run() {
@@ -83,6 +115,9 @@ public class PowerPlayTeleOp extends LinearOpMode {
                         }
                     });
                 }
+            }
+            if (gamepad1.b) {
+                grabMode = true;
             }
 
             //use for correcting lift position when it stops in auto or
@@ -104,5 +139,8 @@ public class PowerPlayTeleOp extends LinearOpMode {
                 manualLiftOp = false;
             }
         }
+    }
+    public int getConeColor() {
+        return Color.RED;
     }
 }

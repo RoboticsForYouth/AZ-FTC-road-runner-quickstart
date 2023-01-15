@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.freightFrenzy.tools.AZUtil;
+import org.firstinspires.ftc.teamcode.aztools.AZUtil;
 import org.firstinspires.ftc.teamcode.powerplay.tools.ConeTool;
 import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
