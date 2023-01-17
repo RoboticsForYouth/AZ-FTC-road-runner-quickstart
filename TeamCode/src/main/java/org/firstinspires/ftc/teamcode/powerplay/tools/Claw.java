@@ -103,13 +103,14 @@ public class Claw extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        this.opMode = this;
+
         telemetry.addLine("Init");
         telemetry.update();
         test();
     }
 
     private void test() {
-        this.opMode = this;
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
 //        MultipleTelemetry telemetry;

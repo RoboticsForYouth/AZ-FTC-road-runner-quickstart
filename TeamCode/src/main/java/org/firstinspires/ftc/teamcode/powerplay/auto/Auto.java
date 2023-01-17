@@ -12,6 +12,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.powerplay.tools.ConeTool;
 import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Size;
 
 @Autonomous
 public class Auto extends LinearOpMode {
@@ -27,6 +30,11 @@ public class Auto extends LinearOpMode {
     private Vector2d backUp;
     private Trajectory coneStackTrajectoryDropSequence;
     private TrajectorySequence dropConeStackTrajectorySequence;
+
+
+    public Rect getSleeveDetectionBoundingBox(){
+        return new Rect(new Point(320, 149), new Size(60, 90));
+    }
 
     public enum FieldPos {
         LEFT,
@@ -52,7 +60,8 @@ public class Auto extends LinearOpMode {
 
     public void initAuto() {
         coneTool = new ConeTool(this);
-        sleeveDetection = new SleeveDetection(this);
+        sleeveDetection = new SleeveDetection(this, getSleeveDetectionBoundingBox().tl(),
+                getSleeveDetectionBoundingBox().width, getSleeveDetectionBoundingBox().height);
         sleeveDetection.setup();
         drive = new SampleMecanumDrive(hardwareMap);
         telemetry.addData("Status", "Initialized");
@@ -83,10 +92,10 @@ public class Auto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     coneTool.liftTo(Lift.LiftLevel.HIGH);
                 })
-                .splineTo(new Vector2d(-12, 36), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-5, 32, Math.toRadians(300)), Math.toRadians(0))
-                //.splineToConstantHeading(new Vector2d(-30, 36), Math.toRadians(0))
-                //.splineToSplineHeading(new Pose2d(-7, 32, Math.toRadians(300)), Math.toRadians(0))
+//                .splineTo(new Vector2d(-12, 36), Math.toRadians(0))
+//                .splineToLinearHeading(new Pose2d(-5, 32, Math.toRadians(300)), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-30, 36), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(-7, 32, Math.toRadians(300)), Math.toRadians(0))
                 .build();
 
         grabConeStackTrajectorySequence = drive.trajectorySequenceBuilder(dropConeTrajectory.end())

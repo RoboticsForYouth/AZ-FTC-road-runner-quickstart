@@ -22,11 +22,11 @@ public class RedPowerPlayTeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     boolean grabMode = false;
     private Lift.LiftLevel[] liftLevels = new Lift.LiftLevel[]{
+            Lift.LiftLevel.CONE_2,
+            Lift.LiftLevel.ZERO,
             Lift.LiftLevel.CONE_5,
             Lift.LiftLevel.CONE_4,
-            Lift.LiftLevel.CONE_3,
-            Lift.LiftLevel.CONE_2,
-            Lift.LiftLevel.CLEAR
+            Lift.LiftLevel.CONE_3
     };
     private int coneStackCount = 0;
     private boolean coneStackMode = false;
@@ -83,7 +83,7 @@ public class RedPowerPlayTeleOp extends LinearOpMode {
                         coneStackCount = 0;
                     }
                 }
-                if(coneStackMode && runtime.seconds() >= 1.0) {
+                if(coneStackMode && runtime.seconds() >= 0.5) {
                     coneStackMode = false;
                 }
             }

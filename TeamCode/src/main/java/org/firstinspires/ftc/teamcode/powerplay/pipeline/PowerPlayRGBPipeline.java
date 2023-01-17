@@ -5,6 +5,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Rect2d;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -98,6 +99,13 @@ public class PowerPlayRGBPipeline extends OpenCvPipeline {
         REGION1_TOPLEFT_ANCHOR_POINT.y = topLeft.y;
         REGION_WIDTH = width;
         REGION_HEIGHT = height;
+
+        region1_pointA = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x,
+                REGION1_TOPLEFT_ANCHOR_POINT.y);
+        region1_pointB = new Point(
+                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
     }
 
     @Override
@@ -159,9 +167,9 @@ public class PowerPlayRGBPipeline extends OpenCvPipeline {
          */
 //
 
-        System.out.println(avgBlue);
-        System.out.println(avgGreen);
-        System.out.println(avgRed);
+//        System.out.println(avgBlue);
+//        System.out.println(avgGreen);
+//        System.out.println(avgRed);
 
         position = 1;
         Scalar borderColor = BLUE;
