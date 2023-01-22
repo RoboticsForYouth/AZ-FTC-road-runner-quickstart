@@ -71,7 +71,13 @@ public class RedPowerPlayTeleOp extends LinearOpMode {
                 coneTool.liftTo(Lift.LiftLevel.CLEAR);
             } else if (gamepad1.left_bumper) {
                 coneTool.liftTo(Lift.LiftLevel.ZERO);
-                grabMode = true;
+                AZUtil.runInParallel(new Runnable() {
+                    @Override
+                    public void run() {
+                        sleep(1000);
+                        grabMode = true;
+                    }
+                });
             }
             else if (gamepad1.y) {
                 if(!coneStackMode) {

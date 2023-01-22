@@ -18,7 +18,7 @@ public class Lift extends LinearOpMode {
 
     public static final double UP_POWER = .95;
     public static final double DOWN_POWER = .6;
-    public static int DROP_HEIGHT = 300;
+    public static int DROP_HEIGHT = 250;
     public static final int INC = 25;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;
@@ -50,9 +50,9 @@ public class Lift extends LinearOpMode {
     public enum LiftLevel {
 
         //Cone Stack Levels
-        CONE_5(430),
-        CONE_4(322),
-        CONE_3(250),
+        CONE_5(420),
+        CONE_4(312),
+        CONE_3(240),
         CONE_2(110),
 
         ZERO(0),
@@ -104,6 +104,10 @@ public class Lift extends LinearOpMode {
         if( currentState.getValue() > level.getValue()){
             power = DOWN_POWER;
         }
+        liftTo(level, power);
+    }
+
+    public void liftTo(LiftLevel level, double power) {
         AZUtil.setMotorTargetPosition(leftSlider, level.getValue(), power);
         AZUtil.setMotorTargetPosition(rightSlider, level.getValue(), power);
         currentState = level;
@@ -124,15 +128,6 @@ public class Lift extends LinearOpMode {
         if( leftSliderCurrentPosition > DROP_HEIGHT) {
             AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
             AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition - DROP_HEIGHT, UP_POWER);
-        }
-    }
-
-    public void raiseAfterDrop(){
-        int leftSliderCurrentPosition = leftSlider.getCurrentPosition();
-        int rightSliderCurrentPosition = rightSlider.getCurrentPosition();
-        if( leftSliderCurrentPosition > LiftLevel.LOW.getValue()) {
-            AZUtil.setMotorTargetPosition(leftSlider, leftSliderCurrentPosition + DROP_HEIGHT, UP_POWER);
-            AZUtil.setMotorTargetPosition(rightSlider, rightSliderCurrentPosition + DROP_HEIGHT, UP_POWER);
         }
     }
 

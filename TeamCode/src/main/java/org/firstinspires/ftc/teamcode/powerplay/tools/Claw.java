@@ -18,7 +18,7 @@ public class Claw extends LinearOpMode {
     private int coneColor = RED;
 
 
-    private static int tolerance = 30;
+    private static int tolerance = 50;
 
     private static int grabThresholdColor = 180;
 

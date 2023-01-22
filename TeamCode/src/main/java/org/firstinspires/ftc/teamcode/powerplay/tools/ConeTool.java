@@ -47,6 +47,10 @@ public class ConeTool extends LinearOpMode {
         lift.liftTo(liftLevel);
     }
 
+    public void liftTo(Lift.LiftLevel liftLevel, double power){
+        lift.liftTo(liftLevel, power);
+    }
+
 
     //use only when you need to manually reset motor to zero position
     //Scenario: The robot disconnects during competition and the slide is

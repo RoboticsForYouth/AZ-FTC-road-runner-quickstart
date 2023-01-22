@@ -16,7 +16,7 @@ public class LeftAuto extends Auto {
 
     @Override
     public Rect getSleeveDetectionBoundingBox(){
-        return new Rect(new Point(320, 149), new Size(60, 90));
+        return new Rect(new Point(340, 149), new Size(60, 90));
     }
 
 }

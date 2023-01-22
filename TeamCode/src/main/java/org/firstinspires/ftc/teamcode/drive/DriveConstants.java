@@ -64,7 +64,7 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 60; //33
+    public static double MAX_VEL = 45; //33
     public static double MAX_ACCEL = 45 ; //changed form 30 to 10 to slow down the accel. Otherwise robot tips over
     public static double MAX_ANG_VEL = 150;
     public static double MAX_ANG_ACCEL = 7; //in radians
