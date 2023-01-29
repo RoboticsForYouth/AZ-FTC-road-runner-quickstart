@@ -18,7 +18,7 @@ public class Lift extends LinearOpMode {
 
     public static final double UP_POWER = .95;
     public static final double DOWN_POWER = .6;
-    public static int DROP_HEIGHT = 250;
+    public static int DROP_HEIGHT = 270;
     public static final int INC = 25;
     private DcMotorEx leftSlider;
     private DcMotorEx rightSlider;

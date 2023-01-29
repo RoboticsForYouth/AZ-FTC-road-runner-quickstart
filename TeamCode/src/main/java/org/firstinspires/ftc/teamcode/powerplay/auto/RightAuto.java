@@ -7,7 +7,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 
 @Autonomous
-public class RightAuto extends Auto {
+public class RightAuto extends NewAutoNew {
 
     public RightAuto() {
         super();
@@ -16,7 +16,7 @@ public class RightAuto extends Auto {
 
     @Override
     public Rect getSleeveDetectionBoundingBox(){
-        return new Rect(new Point(300, 149), new Size(60, 90));
+        return new Rect(new Point(290, 149), new Size(60, 90));
     }
 }
 

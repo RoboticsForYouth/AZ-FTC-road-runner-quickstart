@@ -7,7 +7,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 
 @Autonomous(group = "sample")
-public class LeftAuto extends Auto {
+public class LeftAuto extends NewAutoNew {
 
     public LeftAuto() {
         super();
