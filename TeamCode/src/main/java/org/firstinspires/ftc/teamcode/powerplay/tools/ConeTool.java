@@ -31,6 +31,13 @@ public class ConeTool extends LinearOpMode {
         claw.close();
     }
 
+    public void grabConeTeleOp() {
+        claw.close();
+        sleep(500);
+        lift.liftTo(Lift.LiftLevel.CLEAR);
+    }
+
+
     public void dropCone(){
         if( lift.getCurrentState() == Lift.LiftLevel.LOW ||
             lift.getCurrentState() == Lift.LiftLevel.MEDIUM ||
@@ -41,6 +48,9 @@ public class ConeTool extends LinearOpMode {
         }
         claw.open();
 
+    }
+    public boolean isLiftHigh() {
+        return lift.getCurrentPosition().first == Lift.LiftLevel.HIGH.getValue();
     }
 
     public void liftTo(Lift.LiftLevel liftLevel){

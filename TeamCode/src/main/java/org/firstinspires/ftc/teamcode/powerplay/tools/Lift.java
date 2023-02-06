@@ -62,7 +62,7 @@ public class Lift extends LinearOpMode {
         FOURTH_CONE(800),
         LOW(1250),
         MEDIUM(1950),
-        HIGH(2640);
+        HIGH(2630);
 
         private int value;
 
@@ -142,6 +142,10 @@ public class Lift extends LinearOpMode {
     }
 
     private void testLiftPosition() {
+        testTeleOp();
+    }
+
+    private void testTeleOp() {
         setup();
         drive = new SampleMecanumDrive(opMode.hardwareMap);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -171,13 +175,15 @@ public class Lift extends LinearOpMode {
             } else if (gamepad1.dpad_right){
                 liftTo(LiftLevel.HIGH);
             }
-            telemetry.addLine("Pos");
-            telemetry.addData("Gamepad", gamepad1);
-            telemetry.addData("Left Slider Pos", leftSlider.getCurrentPosition());
+//            telemetry.addLine("Pos");
+//            telemetry.addData("Gamepad", gamepad1);
+            telemetry.addData("Left Pos", leftSlider.getCurrentPosition());
             telemetry.addData("Right Slider Pos", rightSlider.getCurrentPosition());
+            telemetry.addData("Expected Pos", getCurrentState().getValue());
             telemetry.update();
         }
     }
+
     public void setDropHeight(int height) {
         DROP_HEIGHT = height;
     }

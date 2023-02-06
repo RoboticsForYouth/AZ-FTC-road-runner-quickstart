@@ -21,7 +21,7 @@ import org.opencv.core.Size;
 
 //@Disabled
 @Autonomous
-public class NewAutoNew extends LinearOpMode {
+public class Med3LowAuto extends LinearOpMode {
     ElapsedTime runtime = new ElapsedTime();
     ConeTool coneTool;
     SampleMecanumDrive drive;
@@ -102,14 +102,14 @@ public class NewAutoNew extends LinearOpMode {
 
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(slowVelocity, slowAcc, DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(slowAcc);
-        TrajectoryVelocityConstraint parkingVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(42, 40, DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint parkingAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(40);
+        TrajectoryVelocityConstraint parkingVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(47, 44, DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint parkingAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(44);
         dropConeTrajectory = drive.trajectorySequenceBuilder(origin)
                 //move to high junction
                 .addDisplacementMarker(() -> {
                     coneTool.liftTo(Lift.LiftLevel.MEDIUM);
                 })
-                .splineToConstantHeading(new Vector2d(-44.25, 36), Math.toRadians(0), velocityConstraint, accelerationConstraint)
+                .splineToConstantHeading(new Vector2d(-44.25, 36), Math.toRadians(0), parkingVelocityConstraint, parkingAccelerationConstraint)
                 .splineToSplineHeading(mediumJuncPos, Math.toRadians(0), velocityConstraint, accelerationConstraint)
                 .build();
         goToConeStack = drive.trajectorySequenceBuilder(dropConeTrajectory.end())
@@ -117,13 +117,13 @@ public class NewAutoNew extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     coneTool.liftTo(Lift.LiftLevel.CONE_5);
                 })
-                .lineToLinearHeading(new Pose2d(-12.5, 38, Math.toRadians(0)), velocityConstraint, accelerationConstraint)
-                .lineToLinearHeading(new Pose2d(-12.5, 42, Math.toRadians(90)), velocityConstraint, accelerationConstraint)
-                .lineToConstantHeading(new Vector2d(-12.8, 63), velocityConstraint, accelerationConstraint)
+                .lineToLinearHeading(new Pose2d(-12.8, 38, Math.toRadians(0)), velocityConstraint, accelerationConstraint)
+                .lineToLinearHeading(new Pose2d(-12.8, 42, Math.toRadians(90)), velocityConstraint, accelerationConstraint)
+                .lineToConstantHeading(new Vector2d(-13.2, 62.5), velocityConstraint, accelerationConstraint)
                 .build();
 
         dropConeStackTrajectorySequence = drive.trajectorySequenceBuilder(goToConeStack.end())
-                .back(8.5)
+                .back(7.5)
                 .lineToLinearHeading(new Pose2d(-12.5, 54.25, Math.toRadians(205)), velocityConstraint, accelerationConstraint)
                 .forward(5.5)
                 .build();
@@ -135,7 +135,7 @@ public class NewAutoNew extends LinearOpMode {
 //                .addDisplacementMarker(() -> {
 //                    grabConeWhenDetectedAsync();
 //                })
-                .lineToConstantHeading(new Vector2d(-12.8, 63), velocityConstraint, accelerationConstraint)
+                .lineToConstantHeading(new Vector2d(-12.8, 62), velocityConstraint, accelerationConstraint)
                 .build();
 
         pos1Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
@@ -143,12 +143,15 @@ public class NewAutoNew extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-15, 63, Math.toRadians(180)), parkingVelocityConstraint, parkingAccelerationConstraint)
                 .build();
         pos2Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
-                .back(7)
-                .lineToLinearHeading(new Pose2d(-14, 37, Math.toRadians(180)), parkingVelocityConstraint, parkingAccelerationConstraint)
+                .back(5)
+                .turn(Math.toRadians(-115))
+                .lineToConstantHeading(new Vector2d(-14, 34), parkingVelocityConstraint, parkingAccelerationConstraint)
                 .build();
         pos3Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
-                .back(7)
-                .lineToLinearHeading(new Pose2d(-14.5, 12, Math.toRadians(180)), parkingVelocityConstraint, parkingAccelerationConstraint)
+                .back(5)
+                .turn(Math.toRadians(65))
+                .lineToConstantHeading(new Vector2d(-10, 12), parkingVelocityConstraint, parkingAccelerationConstraint)
+                //.forward(4)
                 .build();
     }
 
@@ -168,8 +171,8 @@ public class NewAutoNew extends LinearOpMode {
 
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(slowVelocity, slowAcc, DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(slowAcc);
-        TrajectoryVelocityConstraint parkingVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(42, 40, DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint parkingAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(40);
+        TrajectoryVelocityConstraint parkingVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(47, 44, DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint parkingAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(44);
         dropConeTrajectory = drive.trajectorySequenceBuilder(origin)
                 //move to high junction
                 .addDisplacementMarker(() -> {
@@ -185,12 +188,12 @@ public class NewAutoNew extends LinearOpMode {
                 })
                 .lineToLinearHeading(new Pose2d(-12.2, -39.5, Math.toRadians(0)), velocityConstraint, accelerationConstraint)
                 .lineToLinearHeading(new Pose2d(-12.8, -43.5, Math.toRadians(-90)), velocityConstraint, accelerationConstraint)
-                .lineToConstantHeading(new Vector2d(-13.2, -65), velocityConstraint, accelerationConstraint)
+                .lineToConstantHeading(new Vector2d(-12.8, -63.5), velocityConstraint, accelerationConstraint)
                 .build();
 
         dropConeStackTrajectorySequence = drive.trajectorySequenceBuilder(goToConeStack.end())
                 .back(8)
-                .lineToLinearHeading(new Pose2d(-12.8, -56.5, Math.toRadians(-205)), velocityConstraint, accelerationConstraint)
+                .lineToLinearHeading(new Pose2d(-12.8, -56.5, Math.toRadians(-214)), velocityConstraint, accelerationConstraint)
                 .forward(5)
                 .build();
 
@@ -201,7 +204,7 @@ public class NewAutoNew extends LinearOpMode {
 //                .addDisplacementMarker(() -> {
 //                    grabConeWhenDetectedAsync();
 //                })
-                .lineToConstantHeading(new Vector2d(-12.5, -65), velocityConstraint, accelerationConstraint)
+                .lineToConstantHeading(new Vector2d(-12.5, -63.5), velocityConstraint, accelerationConstraint)
                 .build();
 
         pos3Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
@@ -210,11 +213,15 @@ public class NewAutoNew extends LinearOpMode {
                 .build();
         pos2Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
                 .back(7)
-                .lineToLinearHeading(new Pose2d(-14, -39.5, Math.toRadians(180)), parkingVelocityConstraint, parkingAccelerationConstraint)
+                .turn(Math.toRadians(-65))
+                .lineToConstantHeading(new Vector2d(-14, -39.5), parkingVelocityConstraint, parkingAccelerationConstraint)
+                //.forward(4)
                 .build();
         pos1Trajectory = drive.trajectorySequenceBuilder(dropConeStackTrajectorySequence.end())
-                .back(7)
-                .lineToLinearHeading(new Pose2d(-12, -14, Math.toRadians(180)), parkingVelocityConstraint, parkingAccelerationConstraint)
+                .back(5)
+                .turn(Math.toRadians(-65))
+                .lineToConstantHeading(new Vector2d(-12, -14), parkingVelocityConstraint, parkingAccelerationConstraint)
+                //.forward(4)
                 .build();
     }
 
