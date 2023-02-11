@@ -7,7 +7,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 
 @Autonomous
-public class RightAuto extends Med3LowAuto {
+public class RightAuto extends BaseAuto {
 
     public RightAuto() {
         super();

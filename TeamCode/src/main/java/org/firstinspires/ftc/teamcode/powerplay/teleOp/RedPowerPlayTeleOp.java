@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.powerplay.tools.Lift;
 
 @TeleOp
 public class RedPowerPlayTeleOp extends LinearOpMode {
-    public static final double DEFAULT_DRIVE_FACTOR = 1.5;
+    public static final double DEFAULT_DRIVE_FACTOR = 1.25;
     public static final int SLOW_DRIVE_FACTOR = 4;
     SampleMecanumDrive drive;
     ConeTool coneTool;
@@ -131,11 +131,11 @@ public class RedPowerPlayTeleOp extends LinearOpMode {
             //robot disconnects
             if(gamepad1.left_trigger > 0){
                 manualLiftOp = true;
-                coneTool.lowerWithoutEncoder(gamepad1.left_trigger);
+                coneTool.lowerWithoutEncoder(gamepad1.left_trigger/2);
             }
             if(gamepad1.right_trigger > 0){
                 manualLiftOp = true;
-                coneTool.raiseWithoutEncoder(gamepad1.right_trigger);
+                coneTool.raiseWithoutEncoder(gamepad1.right_trigger/2);
             }
 
             if( manualLiftOp
